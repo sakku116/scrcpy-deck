@@ -105,6 +105,23 @@ export class AdbBinary {
         });
     }
 
+    /**
+     * Prepends the bundled adb directory to `process.env.PATH` so that adbkit
+     * and any inherited ws-scrcpy code that spawns `adb` directly can find the
+     * binary without knowing its absolute path.  No-op when adb comes from PATH.
+     */
+    public static injectIntoPath(): void {
+        if (!AdbBinary.isBundled()) {
+            return;
+        }
+        const adbDir = path.dirname(AdbBinary.resolve());
+        const sep = process.platform === 'win32' ? ';' : ':';
+        const current = process.env.PATH ?? '';
+        if (!current.split(sep).includes(adbDir)) {
+            process.env.PATH = adbDir + sep + current;
+        }
+    }
+
     /** Ensures the adb server is running so subsequent commands are fast. */
     public static async startServer(): Promise<void> {
         await AdbBinary.exec(['start-server']);

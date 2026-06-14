@@ -94,6 +94,10 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
             /// #endif
         }
 
+        // Prepend the bundled adb directory to PATH so that adbkit and any
+        // direct `adb` spawn calls (inherited ws-scrcpy code) find the binary.
+        AdbBinary.injectIntoPath();
+
         // ScrcpyDeck wireless connection REST API.
         this.mainApp.use(WIRELESS_API_BASE, createWirelessRouter());
         // Make sure the adb server is up so device tracking and the wizard work.
