@@ -17,7 +17,7 @@ export class QvhackRunner extends ProcessRunner<ProcessRunnerEvents> {
     protected TAG = '[QvhackRunner]';
     protected name: string;
     protected cmd = 'ws-qvh';
-    protected releaseTimeoutId?: NodeJS.Timeout;
+    protected releaseTimeoutId?: ReturnType<typeof setTimeout>;
     protected address = '';
     protected started = false;
     private holders = 0;

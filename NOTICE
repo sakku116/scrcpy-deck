@@ -1,0 +1,29 @@
+ScrcpyDeck
+==========
+
+ScrcpyDeck is NOT affiliated with, endorsed by, or sponsored by the official
+scrcpy project (Genymobile) or the ws-scrcpy project. "scrcpy" is used here only
+descriptively, to indicate compatibility.
+
+This product bundles and/or builds upon the following third-party components.
+Their respective licenses are retained in the source tree.
+
+1. ws-scrcpy
+   - Copyright (C) 2021 Netris, JSC.
+   - License: MIT (see LICENSE)
+   - Source: https://github.com/NetrisTV/ws-scrcpy
+   - ScrcpyDeck is a fork; most of the in-browser mirroring engine originates here.
+
+2. scrcpy / scrcpy-server
+   - Copyright (C) The Android Open Source Project / Genymobile
+   - License: Apache License 2.0 (see vendor/Genymobile/scrcpy/LICENSE)
+   - File: vendor/Genymobile/scrcpy/scrcpy-server.jar (WebSocket-enabled build
+     as shipped by ws-scrcpy). Pushed to the device to stream H264 video.
+
+3. Broadway.js  - License: see vendor/Broadway/LICENSE
+4. tinyh264     - License: see vendor/tinyh264/LICENSE
+5. h264-live-player - License: see vendor/h264-live-player/LICENSE
+
+Android platform-tools (adb), when bundled via `npm run setup:adb`, are
+distributed by Google under the Android Software Development Kit License
+Agreement and are downloaded at setup time rather than committed to this repo.

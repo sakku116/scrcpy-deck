@@ -1,0 +1,17 @@
+services:
+  scrcpydeck:
+    build: .
+    container_name: scrcpydeck
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    # Wireless connections work over the LAN without USB.
+    #
+    # On a Linux host, uncomment host networking so the container can reach the
+    # phone directly and so mDNS-based Android 11+ pairing discovery works:
+    #
+    # network_mode: host
+    #
+    # To pass through a USB device on a Linux host (the Classic flow), add:
+    # devices:
+    #   - "/dev/bus/usb:/dev/bus/usb"

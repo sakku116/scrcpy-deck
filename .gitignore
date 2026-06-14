@@ -1,4 +1,13 @@
 /node_modules
 /dist
+/dist-exe
 /build
 /.idea
+
+# Build logs
+*.log
+
+# Bundled adb binaries are fetched via `npm run setup:adb`, not committed.
+/vendor/win/
+/vendor/mac/
+/vendor/linux/

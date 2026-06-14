@@ -29,7 +29,11 @@ export const common = () => {
                 {
                     test: /\.tsx?$/,
                     use: [
-                        { loader: 'ts-loader' },
+                        // Only type-check files that actually end up in the bundle.
+                        // Disabled-feature modules (e.g. RemoteShell, appl-device) are
+                        // stripped by ifdef-loader and must not be type-checked, since
+                        // their optional native deps are intentionally not installed.
+                        { loader: 'ts-loader', options: { onlyCompileBundledFiles: true } },
                         {
                             loader: 'ifdef-loader',
                             options: buildConfigOptions,

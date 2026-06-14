@@ -7,7 +7,10 @@ import { TypedEmitter } from '../../common/TypedEmitter';
 import GoogDeviceDescriptor from '../../types/GoogDeviceDescriptor';
 import { ScrcpyServer } from './ScrcpyServer';
 import { Properties } from './Properties';
-import Timeout = NodeJS.Timeout;
+// Use the actual return type of setTimeout so it stays consistent regardless of
+// whether the DOM (number) or Node (NodeJS.Timeout) overload wins under the
+// current `lib` configuration.
+type Timeout = ReturnType<typeof setTimeout>;
 
 enum PID_DETECTION {
     UNKNOWN,

@@ -5,12 +5,15 @@ import AdbKitClient from '@dead50f7/adbkit/lib/adb/client';
 import { AdbExtended } from '../adb';
 import GoogDeviceDescriptor from '../../../types/GoogDeviceDescriptor';
 import Tracker from '@dead50f7/adbkit/lib/adb/tracker';
-import Timeout = NodeJS.Timeout;
 import { BaseControlCenter } from '../../services/BaseControlCenter';
 import { ControlCenterCommand } from '../../../common/ControlCenterCommand';
 import * as os from 'os';
 import * as crypto from 'crypto';
 import { DeviceState } from '../../../common/DeviceState';
+
+// Match the real return type of setTimeout regardless of the active `lib`
+// (DOM -> number, Node -> NodeJS.Timeout); avoids a cross-env type mismatch.
+type Timeout = ReturnType<typeof setTimeout>;
 
 export class ControlCenter extends BaseControlCenter<GoogDeviceDescriptor> implements Service {
     private static readonly defaultWaitAfterError = 1000;

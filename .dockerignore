@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-exe
+build
+.git
+.idea
+*.log
+# Host-specific bundled binaries; the image installs adb via apt instead.
+vendor/win
+vendor/mac
+vendor/linux

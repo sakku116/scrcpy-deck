@@ -8,8 +8,16 @@ import { Config } from '../Config';
 import { TypedEmitter } from '../../common/TypedEmitter';
 import * as process from 'process';
 import { EnvName } from '../EnvName';
+import { createWirelessRouter } from '../api/WirelessRouter';
+import { AdbBinary } from '../adb/AdbBinary';
+import { WIRELESS_API_BASE } from '../../common/WirelessTypes';
 
-const DEFAULT_STATIC_DIR = path.join(__dirname, './public');
+// When packaged into a single executable (pkg), static assets are shipped on
+// disk next to the executable rather than inside the read-only snapshot.
+const IS_PACKAGED = !!(process as unknown as { pkg?: unknown }).pkg;
+const DEFAULT_STATIC_DIR = IS_PACKAGED
+    ? path.join(path.dirname(process.execPath), 'public')
+    : path.join(__dirname, './public');
 
 const PATHNAME = process.env[EnvName.WS_SCRCPY_PATHNAME] || __PATHNAME__;
 
@@ -85,6 +93,12 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
             this.mainApp.get('/mjpeg/:udid', new MjpegProxyFactory().proxyRequest);
             /// #endif
         }
+
+        // ScrcpyDeck wireless connection REST API.
+        this.mainApp.use(WIRELESS_API_BASE, createWirelessRouter());
+        // Make sure the adb server is up so device tracking and the wizard work.
+        void AdbBinary.startServer();
+
         const config = Config.getInstance();
         config.servers.forEach((serverItem) => {
             const { secure, port, redirectToSecure } = serverItem;
@@ -133,6 +147,25 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
         });
         this.started = true;
         this.emit('started', true);
+
+        // In the packaged executable, open the browser automatically so the
+        // end-user experience is "run, then it just opens".
+        if (IS_PACKAGED && this.servers.length) {
+            this.openBrowser(`http://localhost:${this.servers[0].port}${PATHNAME}`);
+        }
+    }
+
+    private openBrowser(url: string): void {
+        const cmd =
+            process.platform === 'win32' ? 'cmd' : process.platform === 'darwin' ? 'open' : 'xdg-open';
+        const args = process.platform === 'win32' ? ['/c', 'start', '', url] : [url];
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { spawn } = require('child_process');
+            spawn(cmd, args, { stdio: 'ignore', detached: true }).unref();
+        } catch {
+            /* best-effort: the listening URL is already printed to the console */
+        }
     }
 
     public release(): void {

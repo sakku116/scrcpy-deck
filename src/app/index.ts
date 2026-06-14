@@ -2,6 +2,7 @@ import '../style/app.css';
 import { StreamClientScrcpy } from './googDevice/client/StreamClientScrcpy';
 import { HostTracker } from './client/HostTracker';
 import { Tool } from './client/Tool';
+import { WirelessWizard } from './wizard/WirelessWizard';
 
 window.onload = async function (): Promise<void> {
     const hash = location.hash.replace(/^#!/, '');
@@ -109,4 +110,6 @@ window.onload = async function (): Promise<void> {
         });
     }
     HostTracker.start();
+    // ScrcpyDeck: add the wireless connection wizard to the dashboard.
+    new WirelessWizard().mount();
 };

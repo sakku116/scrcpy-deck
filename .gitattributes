@@ -1,0 +1,9 @@
+# Normalize line endings to LF (matches upstream ws-scrcpy and Prettier config).
+* text=auto eol=lf
+
+# Treat bundled binaries as binary.
+*.jar binary
+*.exe binary
+*.dll binary
+*.wasm binary
+*.png binary

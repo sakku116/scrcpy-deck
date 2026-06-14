@@ -1,4 +1,8 @@
-Copyright (C) 2021 by Netris, JSC.
+Copyright (C) 2026 ScrcpyDeck contributors.
+Copyright (C) 2021 by Netris, JSC. (original ws-scrcpy)
+
+ScrcpyDeck is a derivative work of ws-scrcpy (https://github.com/NetrisTV/ws-scrcpy),
+distributed under the same MIT License below. See NOTICE for third-party components.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

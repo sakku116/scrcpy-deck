@@ -55,5 +55,14 @@
   "include":[
     "./typings/**/*",
     "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "./typings/appium-xcuitest-driver/**/*",
+    "./src/server/appl-device/**/*",
+    "./src/app/applDevice/**/*",
+    "./src/server/goog-device/mw/RemoteShell.ts"
   ]
 }
