@@ -4,7 +4,7 @@
 // Usage: `npm run setup:adb` (current OS) — re-run per target OS before
 // packaging. Binaries are intentionally git-ignored (see .gitignore).
 import { createWriteStream } from 'node:fs';
-import { mkdir, rm, readdir, rename, chmod } from 'node:fs/promises';
+import { mkdir, rm, readdir, rename, copyFile, unlink, chmod } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -44,8 +44,15 @@ async function main() {
     await rm(extractDir, { recursive: true, force: true });
     await mkdir(extractDir, { recursive: true });
     console.log('Extracting ...');
-    // `tar` ships with modern Windows and unixes and reads zip archives.
-    execFileSync('tar', ['-xf', zipPath, '-C', extractDir], { stdio: 'inherit' });
+    if (process.platform === 'win32') {
+        execFileSync(
+            'powershell',
+            ['-NoProfile', '-Command', `Expand-Archive -Path '${zipPath}' -DestinationPath '${extractDir}' -Force`],
+            { stdio: 'inherit' },
+        );
+    } else {
+        execFileSync('unzip', ['-q', zipPath, '-d', extractDir], { stdio: 'inherit' });
+    }
 
     await mkdir(outDir, { recursive: true });
     const srcDir = path.join(extractDir, 'platform-tools');
@@ -53,7 +60,8 @@ async function main() {
         const from = path.join(srcDir, name);
         if (existsSync(from)) {
             const to = path.join(outDir, name);
-            await rename(from, to);
+            await copyFile(from, to);
+            await unlink(from);
             if (!name.endsWith('.dll')) {
                 await chmod(to, 0o755);
             }
