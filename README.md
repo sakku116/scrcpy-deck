@@ -1,32 +1,32 @@
 # ScrcpyDeck
 
-Mirror and control Android devices from your browser. No app to install on the phone.
+**Mirror and control your Android device — entirely from the browser.**
+
+ScrcpyDeck wraps [scrcpy](https://github.com/Genymobile/scrcpy) and
+[ws-scrcpy](https://github.com/NetrisTV/ws-scrcpy) into a clean web UI.
+No ADB knowledge needed, no app on the phone — plug in once, go wireless forever.
 
 ---
 
 ## Install
 
-### Option A — one command (Windows)
+### PowerShell (one line)
 
 ```powershell
 irm https://raw.githubusercontent.com/sakku116/scrcpy-deck/master/scripts/install.ps1 | iex
 ```
 
-Then run from any terminal:
+Downloads the latest release and adds `scrcpy-deck` to your PATH.
+Open a new terminal when done.
 
-```
-scrcpy-deck
-```
+### Manual (Windows exe)
 
-### Option B — download the exe
-
-[**→ Latest release**](https://github.com/sakku116/scrcpy-deck/releases/latest)
-
-Download `ScrcpyDeck-vX.Y.Z-win-x64.zip`, extract, run `ScrcpyDeck.exe`.
+Download the latest zip from the [**Releases page**](https://github.com/sakku116/scrcpy-deck/releases/latest),
+extract it anywhere, and run `ScrcpyDeck.exe`.
 
 ---
 
-## Usage
+## Start
 
 ```
 scrcpy-deck
@@ -41,39 +41,32 @@ ScrcpyDeck is running.
     http://192.168.1.x:8000
 ```
 
-Open the URL. That's it.
+Open the URL in any browser on the same network. Done.
 
 ---
 
 ## Connect a device
 
-**Wireless (no USB after setup)**
+### Classic — USB once, wireless forever
 
-1. Plug the phone in over USB and accept the *Allow USB debugging* prompt.
-2. Click **+ Add device** → **Classic (USB once)** → **Enable Wi-Fi & connect**.
-3. Unplug the cable. The device stays connected over Wi-Fi.
+1. Plug the phone into USB and accept the **Allow USB debugging** prompt.
+2. In the browser, click **+ Add device → Classic (USB once) → Enable Wi-Fi & connect**.
+3. Unplug. The device stays connected over Wi-Fi and reconnects automatically on the next launch.
 
-Next time you start ScrcpyDeck, the device reconnects automatically.
+### Android 11+ — pairing code, no USB
 
-**Android 11+ pairing code**
-
-Click **+ Add device** → **Android 11+ (pairing code)** and follow the on-screen steps.
+Enable **Wireless debugging** in Developer Options, then click
+**+ Add device → Android 11+ (pairing code)** and follow the steps.
 
 ---
 
 ## Requirements
 
-- Windows 10/11
-- Android device with USB debugging enabled (Developer Options)
-- Phone and PC on the same Wi-Fi network (for wireless)
-
----
-
-## Security
-
-ScrcpyDeck runs a local server accessible only on your network. To block all
-access to the phone: turn off *USB debugging* in Developer Options. ADB
-connections drop immediately.
+| | |
+|---|---|
+| OS | Windows 10 / 11 |
+| Phone | Android 5+ with USB debugging enabled |
+| Network | Phone and PC on the same Wi-Fi |
 
 ---
 
@@ -83,11 +76,20 @@ connections drop immediately.
 git clone https://github.com/sakku116/scrcpy-deck.git
 cd scrcpy-deck
 npm install
-npm run setup:adb
-npm run dist:dev      # dev build
-npm start             # prod build + start
+npm run setup:adb   # downloads adb for your platform
+npm run dist:dev    # development build + watch
+npm start           # production build + server
 ```
 
 ---
 
-Built on top of [ws-scrcpy](https://github.com/NetrisTV/ws-scrcpy).
+## Credits
+
+ScrcpyDeck builds on the shoulders of:
+
+- [**scrcpy**](https://github.com/Genymobile/scrcpy) by Genymobile — the engine that streams and controls Android devices over ADB.
+- [**ws-scrcpy**](https://github.com/NetrisTV/ws-scrcpy) by NetrisTV — the WebSocket bridge that brings scrcpy into the browser.
+
+---
+
+<sub>Platform: Windows · Android · Wireless ADB</sub>
