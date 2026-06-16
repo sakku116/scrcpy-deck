@@ -32,16 +32,13 @@ export class Utils {
                     formatAddress(iface.address, scopeid);
                 });
             });
-        const nameList = [
-            encodeURI(`${proto}://${os.hostname()}:${port}${pathname}`),
-            encodeURI(`${proto}://localhost:${port}${pathname}`),
-        ];
-        console.log('Listening on:\n\t' + nameList.join(' '));
+        const localUrl = `${proto}://localhost:${port}${pathname}`;
+        console.log(`\nScrcpyDeck is running.\n`);
+        console.log(`  Open in your browser:\n`);
+        console.log(`    ${localUrl}`);
         if (ipv4List.length) {
-            console.log('\t' + ipv4List.join(' '));
+            ipv4List.forEach((url) => console.log(`    ${url}`));
         }
-        if (ipv6List.length) {
-            console.log('\t' + ipv6List.join(' '));
-        }
+        console.log();
     }
 }
