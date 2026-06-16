@@ -2,8 +2,8 @@ export class VersionBanner {
     mount(parent: HTMLElement = document.body): void {
         fetch('/api/version')
             .then((r) => r.json())
-            .then(({ current, latest }: { current: string; latest: string | null }) => {
-                if (!latest || latest === current) return;
+            .then(({ current, latest, updateAvailable }: { current: string; latest: string | null; updateAvailable: boolean }) => {
+                if (!updateAvailable || !latest) return;
                 const bar = document.createElement('div');
                 bar.className = 'sd-version-banner';
                 bar.innerHTML = `

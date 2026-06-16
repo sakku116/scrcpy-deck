@@ -8,7 +8,7 @@ import { MwFactory } from './mw/Mw';
 import { WebsocketProxy } from './mw/WebsocketProxy';
 import { HostTracker } from './mw/HostTracker';
 import { WebsocketMultiplexer } from './mw/WebsocketMultiplexer';
-import { checkLatestVersion } from './checkLatestVersion';
+import { checkLatestVersion, isNewerVersion } from './checkLatestVersion';
 
 const [, , cmd] = process.argv;
 
@@ -21,7 +21,7 @@ if (cmd === 'update') {
     checkLatestVersion().then((latest) => {
         if (!latest) {
             console.log('Could not reach GitHub. Check your connection and try again.');
-        } else if (latest === __APP_VERSION__) {
+        } else if (!isNewerVersion(latest, __APP_VERSION__)) {
             console.log(`Already up to date (v${__APP_VERSION__}).`);
         } else {
             console.log(`New version available: v${latest} (current: v${__APP_VERSION__})\n`);
@@ -148,7 +148,7 @@ function startServer() {
             process.on('SIGTERM', exit);
 
             checkLatestVersion().then((latest) => {
-                if (latest && latest !== __APP_VERSION__) {
+                if (latest && isNewerVersion(latest, __APP_VERSION__)) {
                     console.log(`\n⚠ New version available: v${latest}`);
                     console.log('  irm https://raw.githubusercontent.com/sakku116/scrcpy-deck/master/scripts/install.ps1 | iex\n');
                 }

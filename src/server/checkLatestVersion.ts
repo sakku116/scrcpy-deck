@@ -1,5 +1,14 @@
 import * as https from 'https';
 
+export function isNewerVersion(latest: string, current: string): boolean {
+    const parse = (v: string) => v.split('.').map(Number);
+    const [lMaj, lMin, lPat] = parse(latest);
+    const [cMaj, cMin, cPat] = parse(current);
+    if (lMaj !== cMaj) return lMaj > cMaj;
+    if (lMin !== cMin) return lMin > cMin;
+    return lPat > cPat;
+}
+
 export function checkLatestVersion(): Promise<string | null> {
     return new Promise((resolve) => {
         const req = https.get(
