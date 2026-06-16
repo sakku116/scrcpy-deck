@@ -8,8 +8,11 @@ import { mkdir, rm, readdir, rename, copyFile, unlink, chmod } from 'node:fs/pro
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { pipeline } from 'node:stream/promises';
 import { execFileSync } from 'node:child_process';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PLATFORM_MAP = {
     win32: { url: 'platform-tools-latest-windows.zip', dir: 'win', bin: 'adb.exe', extras: ['AdbWinApi.dll', 'AdbWinUsbApi.dll'] },
@@ -24,7 +27,7 @@ async function main() {
     if (!target) {
         throw new Error(`Unsupported platform: ${process.platform}`);
     }
-    const root = path.resolve(import.meta.dirname, '..');
+    const root = path.resolve(__dirname, '..');
     const outDir = path.join(root, 'vendor', target.dir);
     if (existsSync(path.join(outDir, target.bin))) {
         console.log(`adb already present at vendor/${target.dir}/${target.bin}`);
