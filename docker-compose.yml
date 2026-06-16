@@ -5,6 +5,10 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
+    volumes:
+      # Persist config and device history across container restarts.
+      # Edit ./data/config.yaml to customize server settings.
+      - ./data:/data
     # Wireless connections work over the LAN without USB.
     #
     # On a Linux host, uncomment host networking so the container can reach the
