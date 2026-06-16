@@ -32,10 +32,9 @@ export class WirelessService {
 
     /** Enables TCP/IP mode on a USB device, finds its IP and connects over Wi-Fi. */
     public async tcpipConnect(serial: string, port = DEFAULT_TCPIP_PORT): Promise<TcpipResult> {
-        if (!serial) {
-            return { success: false, connected: false, message: 'Missing device serial.' };
-        }
-        const tcpip = await AdbBinary.exec(['-s', serial, 'tcpip', String(port)]);
+        // serial is optional; omitting -s targets the only connected USB device.
+        const tcpipArgs = serial ? ['-s', serial, 'tcpip', String(port)] : ['tcpip', String(port)];
+        const tcpip = await AdbBinary.exec(tcpipArgs);
         if (tcpip.failedToSpawn) {
             return { success: false, connected: false, message: this.adbMissingMessage() };
         }
@@ -48,6 +47,10 @@ export class WirelessService {
             };
         }
 
+        // adbd on the device restarts after switching to TCP mode; give it time
+        // to start listening on the TCP port before we try to connect.
+        await this.delay(1500);
+
         const ip = await this.getDeviceIp(serial);
         if (!ip) {
             return {
@@ -57,7 +60,7 @@ export class WirelessService {
             };
         }
 
-        const connect = await this.connect(ip, port);
+        const connect = await this.connectWithRetry(ip, port);
         return {
             success: connect.success,
             connected: connect.success,
@@ -147,22 +150,39 @@ export class WirelessService {
             });
     }
 
+    /** `connect()` with up to 3 retries, to handle adbd startup latency after `tcpip`. */
+    private async connectWithRetry(host: string, port: number, attempts = 3): Promise<ConnectResult> {
+        let last: ConnectResult = { success: false, message: 'No attempts made.' };
+        for (let i = 0; i < attempts; i++) {
+            last = await this.connect(host, port);
+            if (last.success) return last;
+            if (i < attempts - 1) await this.delay(1000);
+        }
+        return last;
+    }
+
     /** Best-effort detection of the device's Wi-Fi IPv4 address. */
     private async getDeviceIp(serial: string): Promise<string | undefined> {
+        // When serial is empty, adb targets the only connected USB device.
+        const s = serial ? ['-s', serial] : [];
         // Preferred: the wlan0 interface address.
-        const wlan = await AdbBinary.exec(['-s', serial, 'shell', 'ip', '-f', 'inet', 'addr', 'show', 'wlan0']);
+        const wlan = await AdbBinary.exec([...s, 'shell', 'ip', '-f', 'inet', 'addr', 'show', 'wlan0']);
         const inetMatch = wlan.stdout.match(/inet\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
         if (inetMatch) {
             return inetMatch[1];
         }
         // Fallback: the source address of the default route.
-        const route = await AdbBinary.exec(['-s', serial, 'shell', 'ip', 'route']);
+        const route = await AdbBinary.exec([...s, 'shell', 'ip', 'route']);
         const srcMatch = route.stdout.match(/src\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
         if (srcMatch) {
             return srcMatch[1];
         }
         const anyIp = route.stdout.match(IPV4_RE);
         return anyIp ? anyIp[1] : undefined;
+    }
+
+    private delay(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     private adbMissingMessage(): string {
