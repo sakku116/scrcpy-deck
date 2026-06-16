@@ -10,6 +10,9 @@ import * as process from 'process';
 import { EnvName } from '../EnvName';
 import { createWirelessRouter } from '../api/WirelessRouter';
 import { AdbBinary } from '../adb/AdbBinary';
+import { DeviceStore } from '../DeviceStore';
+import { WirelessService } from '../wireless/WirelessService';
+import { DeviceWatcher } from '../wireless/DeviceWatcher';
 import { WIRELESS_API_BASE } from '../../common/WirelessTypes';
 
 // When packaged into a single executable (pkg), static assets are shipped on
@@ -100,8 +103,13 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
 
         // ScrcpyDeck wireless connection REST API.
         this.mainApp.use(WIRELESS_API_BASE, createWirelessRouter());
-        // Make sure the adb server is up so device tracking and the wizard work.
-        void AdbBinary.startServer();
+        // Make sure the adb server is up so device tracking and the wizard work,
+        // then reconnect previously-saved wireless devices and start watching for
+        // USB devices to switch over to wireless automatically.
+        void AdbBinary.startServer().then(async () => {
+            await this.reconnectSavedDevices();
+            DeviceWatcher.getInstance().start();
+        });
 
         const config = Config.getInstance();
         config.servers.forEach((serverItem) => {
@@ -159,6 +167,19 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
         }
     }
 
+    private async reconnectSavedDevices(): Promise<void> {
+        const history = DeviceStore.getInstance().getHistory();
+        if (!history.length) return;
+        const service = WirelessService.getInstance();
+        for (const { ip, port } of history) {
+            try {
+                await service.connect(ip, port);
+            } catch {
+                // best-effort: device may be offline, no action needed
+            }
+        }
+    }
+
     private openBrowser(url: string): void {
         const cmd =
             process.platform === 'win32' ? 'cmd' : process.platform === 'darwin' ? 'open' : 'xdg-open';
@@ -173,6 +194,7 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
     }
 
     public release(): void {
+        DeviceWatcher.getInstance().stop();
         this.servers.forEach((item) => {
             item.server.close();
         });

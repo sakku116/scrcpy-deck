@@ -3,7 +3,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Configuration, HostItem, ServerItem } from '../types/Configuration';
 import { EnvName } from './EnvName';
+import { DATA_DIR, ensureDataDir } from './DataDir';
 import YAML from 'yaml';
+
+const AUTO_CONFIG_PATH = path.join(DATA_DIR, 'config.yaml');
+
+const AUTO_CONFIG_TEMPLATE = `# ScrcpyDeck configuration — auto-generated on first run.
+# See config.example.yaml in the project for all available options.
+
+runGoogTracker: true
+runApplTracker: false
+`;
 
 const DEFAULT_PORT = 8000;
 
@@ -82,7 +92,13 @@ export class Config {
             const configPath = process.env[EnvName.CONFIG_PATH];
             let userConfig: Configuration;
             if (!configPath) {
-                userConfig = {};
+                // No explicit config path — use or create the auto-config in the data dir.
+                if (!fs.existsSync(AUTO_CONFIG_PATH)) {
+                    ensureDataDir();
+                    fs.writeFileSync(AUTO_CONFIG_PATH, AUTO_CONFIG_TEMPLATE, 'utf8');
+                    console.log(`[config] Initialized ${AUTO_CONFIG_PATH}`);
+                }
+                userConfig = (YAML.parse(fs.readFileSync(AUTO_CONFIG_PATH, 'utf8')) as Configuration) ?? {};
             } else {
                 if (configPath.match(YAML_RE)) {
                     userConfig = YAML.parse(this.readFile(configPath));
