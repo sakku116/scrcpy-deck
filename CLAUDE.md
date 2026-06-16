@@ -84,10 +84,14 @@ When the user says "make a release" or "release vX.Y.Z", execute these steps in 
    git merge --no-ff dev -m "chore(release): merge dev into master for vX.Y.Z"
    ```
 
-3. **Determine version** — follow [SemVer](https://semver.org/):
-   - `PATCH` (0.0.x): bug fixes only
-   - `MINOR` (0.x.0): new features, backwards-compatible
-   - `MAJOR` (x.0.0): breaking changes
+3. **Determine version** — follow [SemVer](https://semver.org/). Decide autonomously based on
+   commits since the last tag; do not ask the user:
+   - `PATCH` (0.0.x): only `fix:` / `chore:` / `docs:` commits
+   - `MINOR` (0.x.0): at least one `feat:` commit, no breaking changes
+   - `MAJOR` (x.0.0): any commit with `BREAKING CHANGE:` in the body or a `!` after the type
+   - While the project is pre-1.0 (`0.x.y`), breaking changes bump MINOR not MAJOR.
+   State the chosen version and the reason (e.g. "bumping to 0.3.0 — 2 feat commits") before
+   continuing.
 
 4. **Generate changelog** — list all commits on `dev` since the last tag:
    ```bash
