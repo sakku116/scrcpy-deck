@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const outDir = path.join(root, 'dist-exe');
-const target = process.env.PKG_TARGET || 'node20-win-x64';
+const target = process.env.PKG_TARGET || 'node18-win-x64';
 
 if (!existsSync(path.join(dist, 'index.js'))) {
     console.error('dist/index.js not found. Run `npm run dist` first.');
@@ -35,11 +35,11 @@ console.log(`Packaging ${exeName} for ${target} ...`);
 try {
     execFileSync(
         'npx',
-        ['--yes', '@yao-pkg/pkg', path.join(dist, 'index.js'), '--target', target, '--output', exePath],
+        ['--yes', 'pkg@5', path.join(dist, 'index.js'), '--target', target, '--output', exePath],
         { stdio: 'inherit', cwd: root, shell: process.platform === 'win32' },
     );
 } catch (err) {
-    console.error('\npkg failed. Install it with `npm i -D @yao-pkg/pkg` and retry.');
+    console.error('\npkg failed. Run `npm i -D pkg` and retry.');
     console.error(err.message);
     process.exit(1);
 }
