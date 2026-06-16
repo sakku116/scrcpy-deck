@@ -18,5 +18,9 @@ WORKDIR /app
 # The build emits dist/ with its own package.json listing only runtime deps.
 COPY --from=build /app/dist ./
 RUN npm install --omit=dev && npm cache clean --force
+# Persistent data directory (config, device history). Mount a volume here.
+RUN mkdir -p /data
+VOLUME /data
+ENV SCRCPY_DECK_DATA=/data
 EXPOSE 8000
 CMD ["node", "index.js"]
