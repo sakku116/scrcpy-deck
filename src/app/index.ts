@@ -1,8 +1,9 @@
 import '../style/app.css';
+import '../style/theme.css';
 import { StreamClientScrcpy } from './googDevice/client/StreamClientScrcpy';
 import { HostTracker } from './client/HostTracker';
 import { Tool } from './client/Tool';
-import { WirelessWizard } from './wizard/WirelessWizard';
+import { AppHeader } from './chrome/AppHeader';
 
 window.onload = async function (): Promise<void> {
     const hash = location.hash.replace(/^#!/, '');
@@ -110,6 +111,6 @@ window.onload = async function (): Promise<void> {
         });
     }
     HostTracker.start();
-    // ScrcpyDeck: add the wireless connection wizard to the dashboard.
-    new WirelessWizard().mount();
+    // ScrcpyDeck: app chrome (top bar + wireless wizard + empty state).
+    new AppHeader().mount();
 };

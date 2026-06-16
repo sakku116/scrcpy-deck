@@ -59,6 +59,7 @@ export class StreamClientScrcpy
     private player?: BasePlayer;
     private filePushHandler?: FilePushHandler;
     private fitToScreen?: boolean;
+    private stopStream?: () => void;
     private readonly streamReceiver: StreamReceiverScrcpy;
 
     public static registerPlayer(playerClass: PlayerClass): void {
@@ -311,6 +312,8 @@ export class StreamClientScrcpy
                 this.player.stop();
             }
         };
+        // ScrcpyDeck: expose teardown so the dashboard can close an inline mirror.
+        this.stopStream = stop;
 
         const googMoreBox = (this.moreBox = new GoogMoreBox(udid, player, this));
         const moreBox = googMoreBox.getHolderElement();
@@ -347,6 +350,14 @@ export class StreamClientScrcpy
         console.log(TAG, player.getName(), udid);
     }
 
+    // ScrcpyDeck: tear down the player/receiver and remove the stream view.
+    public stop(): void {
+        if (this.stopStream) {
+            this.stopStream();
+            this.stopStream = undefined;
+        }
+    }
+
     public sendMessage(message: ControlMessage): void {
         this.streamReceiver.sendEvent(message);
     }
@@ -370,6 +381,11 @@ export class StreamClientScrcpy
     public sendNewVideoSetting(videoSettings: VideoSettings): void {
         this.requestedVideoSettings = videoSettings;
         this.sendMessage(CommandControlMessage.createSetVideoSettingsCommand(videoSettings));
+    }
+
+    // ScrcpyDeck: expose current video settings so the inline settings panel can read them.
+    public getVideoSettings(): VideoSettings | undefined {
+        return this.player?.getVideoSettings();
     }
 
     public getClientId(): number {
