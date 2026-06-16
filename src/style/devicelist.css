@@ -1,19 +1,4 @@
-:root {
-    --device-border-color: hsl(0, 0%, 82%);
-    --device-list-stripe-color: hsl(0, 0%, 96%);
-    --device-list-default-color: hsl(0, 0%, 100%);
-    --device-list-hover-color: hsl(218, 67%, 95%);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --device-border-color: hsl(0, 0%, 32%);
-        --device-list-stripe-color: hsl(0, 0%, 16%);
-        --device-list-default-color: hsl(0, 0%, 14%);
-        --device-list-hover-color: hsl(218, 17%, 18%);
-    }
-}
-
+/* Device list — newbie-friendly card layout. Uses ScrcpyDeck theme tokens. */
 
 body.list {
     height: auto;
@@ -22,24 +7,18 @@ body.list {
 }
 
 #devices {
-    padding: 20px 0;
+    box-sizing: border-box;
     width: 100%;
-    height: calc(100% - 40px);
+    padding: 76px 24px 48px;
     overflow-y: auto;
 }
 
+body.sd-mirroring #devices,
 body.stream #devices {
-    background-color: var(--device-list-default-color);
-    opacity: .8;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 3;
+    display: none !important;
 }
 
-body.list #device_list_menu {
-    display: none;
-}
+body.list #device_list_menu { display: none; }
 
 #device_list_menu {
     display: block;
@@ -49,187 +28,417 @@ body.list #device_list_menu {
     z-index: 4;
 }
 
-#devices .device-list button {
-    font-size: var(--font-size);
-    color: var(--button-text-color);
+/* ── List wrapper ── */
+
+#devices .table-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
 }
 
-#devices .device-list div.device:nth-child(2n+1){
-    background-color: var(--device-list-default-color);
+#devices .device-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-family: var(--sd-font);
 }
 
-#devices .device-list div.device:nth-child(2n){
-    background-color: var(--device-list-stripe-color);
+/* Suppress the raw internal tracker ID label. */
+#devices .tracker-name { display: none; }
+
+/* ── Device card ──
+   HTML structure (built in DeviceTracker.buildCardShell):
+     .device
+       .sd-remove-button            (absolute, top-right)
+       .device-top
+         .device-avatar             (phone glyph)
+         .device-identity
+           .device-name
+           .device-meta(.device-version + .device-transport)
+         .device-state              (status pill)
+       .services                    (actions row) */
+
+#devices .device {
+    position: relative;
+    background: var(--sd-surface);
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius);
+    padding: 18px 20px;
+    transition: border-color 0.14s, box-shadow 0.14s;
 }
 
-#devices .device-header {
-    padding: 2px 0;
+#devices .device:hover {
+    border-color: var(--sd-accent);
+    box-shadow: 0 0 0 3px var(--sd-accent-soft);
 }
 
-#devices .device-header div {
+/* Offline cards dim, and their action buttons are inert — but the card itself
+   (and its remove button) stays interactive. */
+#devices .device.not-active {
+    opacity: 0.55;
+}
+
+#devices .device.not-active .services {
+    pointer-events: none;
+}
+
+/* ── Top row: avatar · identity · dots ── */
+
+#devices .device-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+#devices .device-avatar {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--sd-accent-soft);
+    font-size: 22px;
+    line-height: 1;
+}
+
+#devices .device-avatar::before { content: '📱'; }
+
+#devices .device-identity {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Name row: device name + inline status SVG icon */
+#devices .device-name-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
 }
 
 #devices .device-name {
-    font-size: 120%;
+    flex: 1;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--sd-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.25;
+    min-width: 0;
 }
 
-#devices .device-model {
-    font-size: 110%;
+/* Status SVG icon — sits right after the device name */
+#devices .device-state {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
 }
 
-#devices .device-serial {
-    color: var(--url-color);
-    font-size: 80%;
-    margin-left: 6px;
+#devices .device-state svg {
+    width: 100%;
+    height: 100%;
+}
+
+#devices .device.not-active .device-state { color: var(--sd-text-muted); opacity: 0.6; }
+#devices .device.active .device-state { color: var(--sd-ok); }
+
+#devices .device-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
 }
 
 #devices .device-version {
-    font-size: 100%;
-    margin-left: 6px;
-    align-items: baseline;
+    font-size: 0.8rem;
+    color: var(--sd-text-muted);
 }
 
-#devices .device-version .sdk-version {
-    font-size: 75%;
-    color: var(--url-color);
-    margin-left: 0.2em;
+#devices .device-version::before { content: 'Android '; }
+
+/* Transport badge — shows whether the live connection is USB or wireless. */
+#devices .device-transport {
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
-#devices .device-state {
-    border-radius: 25px;
-    background-color: red;
-    font-size: 80%;
-    margin-left: 6px;
-    width: 1em;
-    height: 1em;
+#devices .device-transport-wireless {
+    background: hsla(210, 90%, 55%, 0.14);
+    color: var(--sd-accent, hsl(210, 90%, 60%));
 }
 
-#devices .device.active .device-state {
-    background-color: green;
+#devices .device-transport-usb {
+    background: var(--sd-surface-2, rgba(127, 127, 127, 0.16));
+    color: var(--sd-text-muted);
 }
 
-#devices .device-list {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-}
-
-#devices .device-list {
-    border-spacing: 0;
-    border-collapse: collapse;
-    font-family: monospace;
-    font-size: var(--font-size);
-}
-
-#devices .device-list div.device {
-    padding: 5px 20px 5px;
-}
-
-#devices .device-list div.device:hover {
-    background-color: var(--device-list-hover-color)
-}
-
-#devices .device-list div.device select {
-    color: var(--text-color);
-    background-color: var(--main-bg-color);
-    margin-left: 0;
-    border: none;
-}
-
-#devices .device-list div.device:hover select {
-    background-color: var(--device-list-hover-color);;
-}
-
-#devices .device-list div.desc-block {
-    margin: .3em;
+/* ── More-actions button (⋯) — lives in .device-name-row, right-aligned ── */
+#devices .sd-dots-button {
+    flex-shrink: 0;
+    margin-left: auto;
+    width: 24px;
+    height: 24px;
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--sd-text-muted);
+    opacity: 0.45;
+    transition: opacity 0.12s, background 0.12s;
+    font-size: 0;
 }
 
-#devices .device-list div.desc-block.hidden {
+#devices .sd-dots-button::before {
+    content: '⋯';
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: -0.5px;
+}
+
+#devices .sd-dots-button:hover {
+    opacity: 1;
+    background: var(--sd-surface-2, rgba(127, 127, 127, 0.1));
+}
+
+/* ── Device action dropdown menu ── */
+#devices .sd-device-menu {
+    position: absolute;
+    z-index: 100;
+    min-width: 160px;
+    background: var(--sd-surface);
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius-sm, 8px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+#devices .sd-device-menu-item {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    text-align: left;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--sd-font);
+    font-size: 0.875rem;
+    color: var(--sd-text);
+    transition: background 0.1s;
+}
+
+#devices .sd-device-menu-item:hover {
+    background: var(--sd-surface-2, rgba(127, 127, 127, 0.1));
+}
+
+#devices .sd-device-menu-danger {
+    color: var(--sd-error);
+}
+
+#devices .sd-device-menu-danger:hover {
+    background: hsla(0, 65%, 52%, 0.08);
+}
+
+/* ── Add-device card (always last in the list) ── */
+
+#devices .sd-add-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 18px 20px;
+    border: 2px dashed var(--sd-border);
+    border-radius: var(--sd-radius);
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--sd-font);
+    transition: border-color 0.14s, color 0.14s, background 0.14s;
+    box-sizing: border-box;
+    gap: 0;
+}
+
+#devices .sd-add-card:hover {
+    border-color: var(--sd-accent);
+    background: var(--sd-accent-soft);
+}
+
+/* Action row: icon + "Add device" label */
+#devices .sd-add-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--sd-text-muted);
+    transition: color 0.14s;
+}
+
+#devices .sd-add-card:hover .sd-add-row {
+    color: var(--sd-accent);
+}
+
+#devices .sd-add-row svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Empty-state copy — hidden while real device cards exist */
+#devices .sd-add-hint {
+    display: none;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#devices .sd-add-hint-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--sd-text);
+    margin-bottom: 8px;
+}
+
+#devices .sd-add-hint p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--sd-text-muted);
+    max-width: 300px;
+}
+
+/* When no real devices: expand the card and reveal the empty-state copy */
+#devices .device-list.sd-list-empty .sd-add-card {
+    padding: 64px 24px;
+}
+
+#devices .device-list.sd-list-empty .sd-add-hint {
+    display: block;
+}
+
+#devices .device-list.sd-list-empty .sd-add-row svg {
+    width: 22px;
+    height: 22px;
+}
+
+#devices .device-list.sd-list-empty .sd-add-row {
+    font-size: 0.95rem;
+}
+
+/* ── Actions section ── */
+
+#devices .services {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--sd-border);
+}
+
+#devices .desc-block {
+    display: inline-flex;
+    align-items: center;
+}
+
+#devices .desc-block.hidden { display: none; }
+
+/* Hide internal-use blocks not needed in the device list UI. */
+#devices .desc-block.server_pid,
+#devices .desc-block.net_interface,
+#devices .desc-block:has(> a.link-devtools),
+#devices .desc-block:has(> a.link-shell) {
     display: none;
 }
 
-#devices .device-list div.desc-block.stream,
-#devices .device-list div.desc-block.server_pid,
-#devices .device-list div.desc-block.net_interface {
-    border: 1px solid var(--device-border-color);
-    border-radius: .3em;
-    overflow: hidden;
-    white-space: nowrap;
+/* Hide secondary player buttons — first one is the hero. */
+#devices .desc-block.sd-player:not(.sd-player-primary) {
+    display: none;
 }
 
-#devices .device-list div.device div.desc-block.stream button.action-button {
-    color: var(--button-text-color);
-}
+/* ── Action buttons — icon-only, ordered: files → settings → play ── */
 
-#devices .device-list div.desc-block button {
-    fill: var(--text-color)
-}
-
-#devices .device-list div.desc-block button > span {
-    padding: 0 .5em;
-}
-
-#devices .device-list div.desc-block button > span,
-#devices .device-list div.desc-block button > svg {
-    vertical-align: middle;
-}
-
-#devices .device-list div.desc-block button > svg {
-    width: var(--font-size);
-    height: var(--font-size);
-}
-
-#devices .device-list div.desc-block button > svg > path {
-    fill: var(--text-color);
-}
-
-#devices .device-list .device.not-active div.desc-block button > svg > path {
-    fill: var(--text-color-light);
-}
-
-#devices .device-list .device.not-active select {
-    color: var(--text-color-light);
-}
-
-#devices .device-list .device.not-active {
-    color: var(--text-color-light);
-}
-
-#devices .device-list .device.not-active a {
-    color: var(--link-color-light);
-}
-
-#devices .device-list .device.not-active a:visited {
-    color: var(--link-color_visited-light);
-}
-
-#devices .device-list div.device div.desc-block .action-button {
-    border: none;
-    background-color: rgba(0, 0, 0, 0);
-    color: inherit;
-}
-
-#devices .device-list div.device div.desc-block .action-button.update-interfaces-button {
-    margin-right: 0;
-}
-
-#devices .device-list div.device div.desc-block .action-button.active {
+/* Shared icon-button base */
+#devices .desc-block.file-listing a.link-list-files,
+#devices .desc-block.stream .action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid var(--sd-border);
+    background: var(--sd-surface);
+    color: var(--sd-text-muted);
     cursor: pointer;
+    font-size: 0;          /* hide text content */
+    text-decoration: none;
+    transition: border-color 0.12s, color 0.12s, background 0.12s;
 }
 
-#devices .device-list .device.active div.desc-block .action-button:hover {
-    color: var(--kill-button-hover-color);
+#devices .desc-block.file-listing a.link-list-files svg,
+#devices .desc-block.stream .action-button svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
-#devices .device-list .device.active div.desc-block button.action-button:hover > svg > path {
-    fill: var(--kill-button-hover-color);
+#devices .desc-block.file-listing a.link-list-files:hover,
+#devices .desc-block.stream .action-button:hover {
+    border-color: var(--sd-accent);
+    color: var(--sd-accent);
+    background: var(--sd-accent-soft);
 }
 
-#devices .tracker-name {
-    padding: 5px 20px 5px;
-    font-size: larger;
-    font-weight: bolder;
+/* Order: 1. files  2. settings  3. play */
+#devices .desc-block.file-listing    { order: 1; }
+#devices .desc-block.stream          { order: 2; }
+#devices .desc-block.sd-player-primary { order: 3; }
+
+/* Remove old ::before text tricks */
+#devices .desc-block.stream .action-button::before { content: none; }
+
+/* ── Play button (Mirror Screen) — primary accent style ── */
+
+#devices .desc-block.sd-player-primary a.link-stream {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 10px;
+    border: none;
+    background: var(--sd-accent);
+    color: var(--sd-accent-contrast);
+    cursor: pointer;
+    font-size: 0;
+    text-decoration: none;
+    transition: background 0.14s, box-shadow 0.14s;
+}
+
+#devices .desc-block.sd-player-primary a.link-stream::before { content: none; }
+
+#devices .desc-block.sd-player-primary a.link-stream svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+#devices .desc-block.sd-player-primary a.link-stream:hover {
+    background: var(--sd-accent-hover);
+    box-shadow: 0 0 0 3px var(--sd-accent-soft);
 }

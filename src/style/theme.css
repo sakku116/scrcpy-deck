@@ -1,0 +1,73 @@
+/* ScrcpyDeck design tokens. Loaded after app.css so it re-points the inherited
+   ws-scrcpy CSS variables to a flat, neutral palette with a single accent.
+   Follows the OS light/dark setting. No gradients, minimal shadows. */
+
+:root {
+    --sd-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    --sd-accent: hsl(212, 78%, 47%);
+    --sd-accent-hover: hsl(212, 78%, 41%);
+    --sd-accent-contrast: hsl(0, 0%, 100%);
+    --sd-accent-soft: hsla(212, 78%, 47%, 0.1);
+
+    --sd-bg: hsl(220, 16%, 97%);
+    --sd-surface: hsl(0, 0%, 100%);
+    --sd-surface-2: hsl(220, 16%, 95%);
+    --sd-border: hsl(220, 13%, 88%);
+    --sd-text: hsl(220, 18%, 20%);
+    --sd-text-muted: hsl(220, 9%, 46%);
+
+    --sd-ok: hsl(145, 55%, 42%);
+    --sd-error: hsl(0, 65%, 52%);
+    --sd-pending: hsl(35, 85%, 48%);
+
+    --sd-radius: 10px;
+    --sd-radius-sm: 7px;
+    --sd-gap: 12px;
+    --sd-shadow: 0 1px 2px hsla(220, 18%, 20%, 0.06);
+    --sd-shadow-lifted: 0 8px 24px hsla(220, 18%, 20%, 0.12);
+
+    /* Re-point inherited ws-scrcpy tokens. */
+    --stream-bg-color: #000;
+    --control-buttons-bg-color: hsl(220, 10%, 15%);
+    --controls-bg-color: hsla(220, 10%, 15%, 0.9);
+    --svg-button-fill: hsl(0, 0%, 80%);
+    --main-bg-color: var(--sd-bg);
+    --header-bg-color: var(--sd-surface);
+    --text-color: var(--sd-text);
+    --text-color-light: var(--sd-text-muted);
+    --link-color: var(--sd-accent);
+    --link-color-light: var(--sd-accent);
+    --link-color_visited: var(--sd-accent);
+    --link-color_visited-light: var(--sd-accent);
+    --url-color: var(--sd-text-muted);
+    --button-text-color: var(--sd-accent);
+    --button-border-color: var(--sd-border);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --sd-accent: hsl(212, 90%, 64%);
+        --sd-accent-hover: hsl(212, 90%, 70%);
+        --sd-accent-contrast: hsl(220, 25%, 10%);
+        --sd-accent-soft: hsla(212, 90%, 64%, 0.14);
+
+        --sd-bg: hsl(220, 16%, 10%);
+        --sd-surface: hsl(220, 14%, 14%);
+        --sd-surface-2: hsl(220, 13%, 18%);
+        --sd-border: hsl(220, 10%, 26%);
+        --sd-text: hsl(220, 16%, 92%);
+        --sd-text-muted: hsl(220, 8%, 60%);
+
+        --sd-ok: hsl(145, 50%, 55%);
+        --sd-error: hsl(0, 70%, 65%);
+        --sd-pending: hsl(35, 90%, 60%);
+
+        --sd-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.3);
+        --sd-shadow-lifted: 0 8px 24px hsla(0, 0%, 0%, 0.45);
+    }
+}
+
+body {
+    font-family: var(--sd-font);
+}
