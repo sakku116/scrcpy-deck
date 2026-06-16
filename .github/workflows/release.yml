@@ -35,5 +35,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ScrcpyDeck-*.zip
+          files: |
+            ScrcpyDeck-*.zip
+            scripts/install.ps1
           generate_release_notes: true

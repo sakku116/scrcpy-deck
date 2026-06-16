@@ -51,5 +51,8 @@ if (existsSync(path.join(root, 'vendor'))) {
     cpSync(path.join(root, 'vendor'), path.join(outDir, 'vendor'), { recursive: true });
 }
 
+// CLI launcher — lets users add the folder to PATH and run `scrcpy-deck`.
+import { writeFileSync } from 'node:fs';
+writeFileSync(path.join(outDir, 'scrcpy-deck.bat'), `@echo off\n"%~dp0${exeName}" %*\n`);
+
 console.log(`\nDone. Distribute the whole "${path.basename(outDir)}" folder.`);
-console.log(`Double-click ${exeName} to start the server (open http://localhost:8000).`);
