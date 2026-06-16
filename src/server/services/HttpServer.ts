@@ -160,11 +160,7 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
         this.started = true;
         this.emit('started', true);
 
-        // In the packaged executable, open the browser automatically so the
-        // end-user experience is "run, then it just opens".
-        if (IS_PACKAGED && this.servers.length) {
-            this.openBrowser(`http://localhost:${this.servers[0].port}${PATHNAME}`);
-        }
+        // URL is already printed by Utils.printListeningMsg — let the user open it.
     }
 
     private async reconnectSavedDevices(): Promise<void> {
@@ -177,19 +173,6 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
             } catch {
                 // best-effort: device may be offline, no action needed
             }
-        }
-    }
-
-    private openBrowser(url: string): void {
-        const cmd =
-            process.platform === 'win32' ? 'cmd' : process.platform === 'darwin' ? 'open' : 'xdg-open';
-        const args = process.platform === 'win32' ? ['/c', 'start', '', url] : [url];
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { spawn } = require('child_process');
-            spawn(cmd, args, { stdio: 'ignore', detached: true }).unref();
-        } catch {
-            /* best-effort: the listening URL is already printed to the console */
         }
     }
 
