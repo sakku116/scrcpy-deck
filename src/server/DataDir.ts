@@ -8,7 +8,11 @@ const IS_PACKAGED = !!(process as unknown as { pkg?: unknown }).pkg;
 function resolveDataDir(): string {
     const fromEnv = process.env[EnvName.DATA_DIR];
     if (fromEnv) return path.resolve(fromEnv);
-    if (IS_PACKAGED) return path.join(path.dirname(process.execPath), 'data');
+    if (IS_PACKAGED) {
+        const appData = process.env.APPDATA;
+        if (appData) return path.join(appData, 'ScrcpyDeck');
+        return path.join(path.dirname(process.execPath), 'data');
+    }
     return path.join(process.cwd(), 'data');
 }
 
