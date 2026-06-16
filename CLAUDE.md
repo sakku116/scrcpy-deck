@@ -79,10 +79,11 @@ When the user says "make a release" or "release vX.Y.Z", execute these steps in 
    npm run dist:dev                 # must compile successfully
    ```
 
-2. **Merge `dev` → `master`**
+2. **Open PR `dev` → `master` on GitHub** — do not merge locally.
+   PR title: `chore(release): merge dev into master for vX.Y.Z`
+   Merge via GitHub UI, then pull locally:
    ```bash
-   git checkout master
-   git merge --no-ff dev -m "chore(release): merge dev into master for vX.Y.Z"
+   git checkout master && git pull origin master
    ```
 
 3. **Determine version** — follow [SemVer](https://semver.org/). Decide autonomously based on
@@ -94,34 +95,56 @@ When the user says "make a release" or "release vX.Y.Z", execute these steps in 
    State the chosen version and the reason (e.g. "bumping to 0.3.0 — 2 feat commits") before
    continuing.
 
-4. **Generate changelog** — list all commits on `dev` since the last tag:
-   ```bash
-   git log <last-tag>..HEAD --pretty="- %s" --no-merges
+4. **Update CHANGELOG.md** — prepend a new section at the top of `CHANGELOG.md`:
    ```
-   Group into `### Features`, `### Fixes`, `### Chores`. Skip merge commits.
+   ## [X.Y.Z] — YYYY-MM-DD
 
-5. **Tag**
+   ### Features
+   - ...
+
+   ### Fixes
+   - ...
+
+   ### Chores / Docs
+   - ...
+   ```
+   Use `git log <last-tag>..HEAD --pretty="- %s" --no-merges` to generate the list.
+   Group by type, skip merge commits. Commit on `master`:
+   ```bash
+   git add CHANGELOG.md && git commit -m "chore(release): update CHANGELOG for vX.Y.Z"
+   ```
+
+5. **Bump version**
+   ```bash
+   npm version X.Y.Z --no-git-tag-version
+   git add package.json package-lock.json
+   git commit -m "chore(release): bump version to X.Y.Z"
+   ```
+
+6. **Tag**
    ```bash
    git tag -a vX.Y.Z -m "vX.Y.Z"
    git push origin master --tags
    ```
 
-6. **Build executable**
+7. **Build executable**
    ```bash
-   npm i -D @yao-pkg/pkg   # skip if already installed
-   npm run build:exe        # output: dist-exe/
+   npm run dist:dev             # rebuild with new version injected
+   npm i -D @yao-pkg/pkg        # skip if already installed
+   npm run build:exe            # output: dist-exe/
    ```
 
-7. **Package and upload**
+8. **Package and upload**
    ```bash
    # PowerShell
    Compress-Archive -Path dist-exe\* -DestinationPath ScrcpyDeck-vX.Y.Z-win-x64.zip
    gh release create vX.Y.Z ScrcpyDeck-vX.Y.Z-win-x64.zip `
+     --repo sakku116/scrcpy-deck `
      --title "ScrcpyDeck vX.Y.Z" `
      --notes "<changelog from step 4>"
    ```
 
-8. **Push `dev` tag reference** (keeps dev in sync)
+9. **Sync `dev`** — open a PR `master` → `dev` on GitHub or fast-forward locally if no conflicts:
    ```bash
    git checkout dev
    git merge master -m "chore: sync dev with master after vX.Y.Z release"
