@@ -23,10 +23,11 @@ master          — stable, production-ready
 
 - Never commit directly to `master`.
 - Never commit directly to `dev` unless the change is trivial (typo, one-liner).
-- Branch from `dev`, merge back to `dev` via PR.
-- `dev` merges to `master` only for releases.
+- Branch from `dev`, merge back to `dev` **via GitHub PR only** — never `git merge` locally.
+- `dev` merges to `master` **via GitHub PR only** — never `git merge` locally.
+- All merges must go through a PR: push the branch, open a PR on GitHub, then merge via the GitHub UI.
 - Upstream ws-scrcpy updates: `git fetch upstream && git merge upstream/master` into `dev`,
-  resolve conflicts, then merge to `master` after verification.
+  resolve conflicts, push, then open a PR to `master` after verification.
 
 ### Commit messages
 
