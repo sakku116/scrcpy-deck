@@ -4,6 +4,7 @@ import { StreamClientScrcpy } from './googDevice/client/StreamClientScrcpy';
 import { HostTracker } from './client/HostTracker';
 import { Tool } from './client/Tool';
 import { AppHeader } from './chrome/AppHeader';
+import { VersionBanner } from './chrome/VersionBanner';
 
 window.onload = async function (): Promise<void> {
     const hash = location.hash.replace(/^#!/, '');
@@ -113,4 +114,5 @@ window.onload = async function (): Promise<void> {
     HostTracker.start();
     // ScrcpyDeck: app chrome (top bar + wireless wizard + empty state).
     new AppHeader().mount();
+    new VersionBanner().mount();
 };

@@ -9,6 +9,7 @@ import { TypedEmitter } from '../../common/TypedEmitter';
 import * as process from 'process';
 import { EnvName } from '../EnvName';
 import { createWirelessRouter } from '../api/WirelessRouter';
+import { createVersionRouter } from '../api/VersionRouter';
 import { AdbBinary } from '../adb/AdbBinary';
 import { DeviceStore } from '../DeviceStore';
 import { WirelessService } from '../wireless/WirelessService';
@@ -103,6 +104,7 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
 
         // ScrcpyDeck wireless connection REST API.
         this.mainApp.use(WIRELESS_API_BASE, createWirelessRouter());
+        this.mainApp.use('/api/version', createVersionRouter());
         // Make sure the adb server is up so device tracking and the wizard work,
         // then reconnect previously-saved wireless devices and start watching for
         // USB devices to switch over to wireless automatically.

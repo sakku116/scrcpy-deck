@@ -8,6 +8,33 @@ import { MwFactory } from './mw/Mw';
 import { WebsocketProxy } from './mw/WebsocketProxy';
 import { HostTracker } from './mw/HostTracker';
 import { WebsocketMultiplexer } from './mw/WebsocketMultiplexer';
+import { checkLatestVersion } from './checkLatestVersion';
+
+const [, , cmd] = process.argv;
+
+if (cmd === '--version' || cmd === '-v') {
+    console.log(__APP_VERSION__);
+    process.exit(0);
+}
+
+if (cmd === 'update') {
+    (async () => {
+        process.stdout.write('Checking for updates...\n');
+        const latest = await checkLatestVersion();
+        if (!latest) {
+            console.log('Could not reach GitHub. Check your connection and try again.');
+        } else if (latest === __APP_VERSION__) {
+            console.log(`Already up to date (v${__APP_VERSION__}).`);
+        } else {
+            console.log(`New version available: v${latest} (current: v${__APP_VERSION__})\n`);
+            console.log('To update, run:');
+            console.log('  irm https://raw.githubusercontent.com/sakku116/scrcpy-deck/master/scripts/install.ps1 | iex\n');
+            console.log('Or download manually:');
+            console.log('  https://github.com/sakku116/scrcpy-deck/releases/latest');
+        }
+        process.exit(0);
+    })();
+} else {
 
 const servicesToStart: ServiceClass[] = [HttpServer, WebSocketServer];
 
@@ -118,6 +145,13 @@ Promise.all(loadPlatformModulesPromises)
 
         process.on('SIGINT', exit);
         process.on('SIGTERM', exit);
+
+        checkLatestVersion().then((latest) => {
+            if (latest && latest !== __APP_VERSION__) {
+                console.log(`\n⚠ New version available: v${latest}`);
+                console.log('  irm https://raw.githubusercontent.com/sakku116/scrcpy-deck/master/scripts/install.ps1 | iex\n');
+            }
+        });
     })
     .catch((error) => {
         console.error(error.message);
@@ -139,3 +173,5 @@ function exit(signal: string) {
         service.release();
     });
 }
+
+} // end else (not a CLI subcommand)
