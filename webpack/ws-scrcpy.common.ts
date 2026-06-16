@@ -16,6 +16,7 @@ const override = path.join(PROJECT_ROOT, '/build.config.override.json');
 const buildConfigOptions = mergeWithDefaultConfig(override);
 const buildConfigDefinePlugin = new webpack.DefinePlugin({
     '__PATHNAME__': JSON.stringify(buildConfigOptions.PATHNAME),
+    '__APP_VERSION__': JSON.stringify(require(PACKAGE_JSON).version),
 });
 
 export const common = () => {
