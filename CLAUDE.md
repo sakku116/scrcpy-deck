@@ -65,6 +65,73 @@ files. When an inherited file must change, keep the diff minimal and note why.
 - No multi-paragraph docstrings or multi-line comment blocks.
 - ESLint + Prettier enforced: `npm run lint` / `npm run format`.
 
+## Release Process
+
+When the user says "make a release" or "release vX.Y.Z", execute these steps in order.
+**Always confirm the version number with the user before proceeding.**
+
+### Steps
+
+1. **Verify `dev` is clean and builds**
+   ```bash
+   git checkout dev && git status   # must be clean
+   npm run dist:dev                 # must compile successfully
+   ```
+
+2. **Merge `dev` → `master`**
+   ```bash
+   git checkout master
+   git merge --no-ff dev -m "chore(release): merge dev into master for vX.Y.Z"
+   ```
+
+3. **Determine version** — follow [SemVer](https://semver.org/). Decide autonomously based on
+   commits since the last tag; do not ask the user:
+   - `PATCH` (0.0.x): only `fix:` / `chore:` / `docs:` commits
+   - `MINOR` (0.x.0): at least one `feat:` commit, no breaking changes
+   - `MAJOR` (x.0.0): any commit with `BREAKING CHANGE:` in the body or a `!` after the type
+   - While the project is pre-1.0 (`0.x.y`), breaking changes bump MINOR not MAJOR.
+   State the chosen version and the reason (e.g. "bumping to 0.3.0 — 2 feat commits") before
+   continuing.
+
+4. **Generate changelog** — list all commits on `dev` since the last tag:
+   ```bash
+   git log <last-tag>..HEAD --pretty="- %s" --no-merges
+   ```
+   Group into `### Features`, `### Fixes`, `### Chores`. Skip merge commits.
+
+5. **Tag**
+   ```bash
+   git tag -a vX.Y.Z -m "vX.Y.Z"
+   git push origin master --tags
+   ```
+
+6. **Build executable**
+   ```bash
+   npm i -D @yao-pkg/pkg   # skip if already installed
+   npm run build:exe        # output: dist-exe/
+   ```
+
+7. **Package and upload**
+   ```bash
+   # PowerShell
+   Compress-Archive -Path dist-exe\* -DestinationPath ScrcpyDeck-vX.Y.Z-win-x64.zip
+   gh release create vX.Y.Z ScrcpyDeck-vX.Y.Z-win-x64.zip `
+     --title "ScrcpyDeck vX.Y.Z" `
+     --notes "<changelog from step 4>"
+   ```
+
+8. **Push `dev` tag reference** (keeps dev in sync)
+   ```bash
+   git checkout dev
+   git merge master -m "chore: sync dev with master after vX.Y.Z release"
+   git push origin dev
+   ```
+
+### Notes
+- `dist-exe/` and `*.zip` are gitignored — never commit them.
+- `data/` (device history, config) is gitignored — never commit it.
+- If `gh release create` fails, create the release manually at github.com and attach the zip.
+
 ## Remotes
 
 - `origin`   → `git@github.com:sakku116/scrcpy-deck.git` (this fork)

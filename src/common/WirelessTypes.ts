@@ -57,6 +57,11 @@ export interface ConnectResult extends WirelessResult {
 export interface DisconnectRequest {
     /** "ip:port" target to disconnect, or empty to disconnect all. */
     target?: string;
+    /**
+     * When true the server suppresses auto-reconnect for this target until the
+     * user explicitly reconnects (e.g. via the wizard or POST /connect).
+     */
+    manual?: boolean;
 }
 
 /** A single device row as reported by `adb devices -l`. */
@@ -81,6 +86,18 @@ export interface AdbInfoResult extends WirelessResult {
     version?: string;
     /** True when the binary is the bundled one under vendor/. */
     bundled: boolean;
+}
+
+/** A previously-connected wireless device saved in data/devices.json. */
+export interface DeviceHistoryEntry {
+    ip: string;
+    port: number;
+    lastConnected: string;
+}
+
+/** `GET /api/wireless/history` */
+export interface DeviceHistoryResult extends WirelessResult {
+    history: DeviceHistoryEntry[];
 }
 
 export const WIRELESS_API_BASE = '/api/wireless';

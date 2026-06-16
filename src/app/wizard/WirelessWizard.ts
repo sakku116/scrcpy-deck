@@ -13,8 +13,9 @@ type TabId = 'classic' | 'android11';
 /**
  * Self-contained "Connect Wireless" UI for the ScrcpyDeck dashboard.
  *
- * It renders a launcher button plus a modal with two guided flows (Classic and
- * Android 11+), talking to the backend through {@link WIRELESS_API_BASE}. The
+ * It renders a modal with two guided flows (Classic and Android 11+), opened via
+ * {@link open} from the app header, talking to the backend through
+ * {@link WIRELESS_API_BASE}. The
  * component owns its own DOM and styles (`src/style/wizard.css`) and has no
  * dependency on the inherited ws-scrcpy device-table internals, so it stays
  * easy to maintain in isolation.
@@ -23,16 +24,8 @@ export class WirelessWizard {
     private overlay?: HTMLElement;
     private statusEl?: HTMLElement;
 
-    /** Adds the launcher button to the page. Call once on the dashboard. */
-    public mount(parent: HTMLElement = document.body): void {
-        const launcher = document.createElement('button');
-        launcher.className = 'sd-launcher';
-        launcher.textContent = '+ Connect Wireless';
-        launcher.addEventListener('click', () => this.open());
-        parent.appendChild(launcher);
-    }
-
-    private open(): void {
+    /** Shows the wizard modal, building it on first use. */
+    public open(): void {
         if (this.overlay) {
             this.overlay.classList.add('sd-visible');
             return;
@@ -59,14 +52,10 @@ export class WirelessWizard {
         const modal = document.createElement('div');
         modal.className = 'sd-modal';
 
-        const header = document.createElement('div');
-        header.className = 'sd-header';
-        header.innerHTML = '<h2>Connect a device wirelessly</h2>';
         const closeBtn = document.createElement('button');
         closeBtn.className = 'sd-close';
         closeBtn.textContent = '×';
         closeBtn.addEventListener('click', () => this.close());
-        header.appendChild(closeBtn);
 
         const tabs = document.createElement('div');
         tabs.className = 'sd-tabs';
@@ -85,7 +74,7 @@ export class WirelessWizard {
         adbInfo.className = 'sd-adb-info';
         adbInfo.id = 'sd-adb-info';
 
-        modal.append(header, tabs, body, this.statusEl, adbInfo);
+        modal.append(closeBtn, tabs, body, this.statusEl, adbInfo);
         overlay.appendChild(modal);
         this.setActiveTab('classic', overlay);
         return overlay;
@@ -120,7 +109,7 @@ export class WirelessWizard {
             <ol class="sd-steps">
                 <li>Plug the phone in over USB and accept the "Allow USB debugging" prompt.</li>
                 <li>Make sure the phone Wi-Fi is on and shares this computer's network.</li>
-                <li>Enter the USB serial below (or leave blank to use the only connected device).</li>
+                <li>If more than one USB device is connected, enter its serial (from <code>adb devices</code>). Otherwise leave blank.</li>
             </ol>`;
 
         const serial = this.input('text', 'sd-classic-serial', 'USB serial (optional)');
