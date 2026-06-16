@@ -18,6 +18,12 @@ $zip = "$env:TEMP\scrcpy-deck-$version.zip"
 Invoke-WebRequest $asset.browser_download_url -OutFile $zip
 
 Write-Host "Installing to $installDir..."
+$newDataDir = "$env:APPDATA\ScrcpyDeck"
+$legacyData = "$installDir\data"
+if ((Test-Path $legacyData) -and (-not (Test-Path $newDataDir))) {
+    Write-Host "Migrating user data to $newDataDir ..."
+    Copy-Item -Path $legacyData -Destination $newDataDir -Recurse -Force
+}
 if (Test-Path $installDir) { Remove-Item $installDir -Recurse -Force }
 Expand-Archive $zip -DestinationPath $installDir
 Remove-Item $zip
