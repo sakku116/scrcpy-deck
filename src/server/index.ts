@@ -9,6 +9,7 @@ import { WebsocketProxy } from './mw/WebsocketProxy';
 import { HostTracker } from './mw/HostTracker';
 import { WebsocketMultiplexer } from './mw/WebsocketMultiplexer';
 import { checkLatestVersion, isNewerVersion } from './checkLatestVersion';
+import { AdbBinary } from './adb/AdbBinary';
 
 const [, , cmd] = process.argv;
 
