@@ -6,6 +6,20 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.0] — 2026-06-17
+
+### Features
+- `scrcpy-deck help` / `--help` / `-h` prints all supported commands and flags
+- `scrcpy-deck uninstall` prints one-liner uninstall instructions
+
+### Fixes
+- `scrcpy-server.jar` now resolved from exe directory when packaged — fixes device mirroring on USB connect
+- `install.ps1` starts ADB daemon during install so first `scrcpy-deck` run works without errors
+- `uninstall.ps1` kills ScrcpyDeck process before removing files — fixes "Access denied" on exe
+- ADB start-server now uses a warmup call to handle Windows first-run scan edge cases
+
+---
+
 ## [0.5.0] — 2026-06-17
 
 ### Features
