@@ -6,6 +6,13 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.1] — 2026-06-17
+
+### Fixes
+- `install.ps1` now kills the ADB daemon before removing the old install directory — fixes "Access denied" on `adb.exe` when updating
+
+---
+
 ## [0.6.0] — 2026-06-17
 
 ### Features
