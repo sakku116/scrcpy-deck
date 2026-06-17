@@ -38,5 +38,10 @@ if ($currentPath -notlike "*$installDir*") {
     Write-Host "Added $installDir to PATH."
 }
 
+# Start the ADB daemon once so Windows completes its first-run security scan
+# before the user launches ScrcpyDeck. Silently ignored if it fails.
+Write-Host "Initializing ADB..."
+try { & "$installDir\vendor\win\adb.exe" start-server 2>$null } catch {}
+
 Write-Host "`nDone! Open a new terminal and run:" -ForegroundColor Green
 Write-Host "  scrcpy-deck`n" -ForegroundColor White
