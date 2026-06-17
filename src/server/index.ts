@@ -141,11 +141,11 @@ function startServer() {
                         input: process.stdin,
                         output: process.stdout,
                     })
-                    .on('SIGINT', exit);
+                    .on('SIGINT', () => exit('SIGINT'));
             }
 
-            process.on('SIGINT', exit);
-            process.on('SIGTERM', exit);
+            process.on('SIGINT', () => exit('SIGINT'));
+            process.on('SIGTERM', () => exit('SIGTERM'));
 
             checkLatestVersion().then((latest) => {
                 if (latest && isNewerVersion(latest, __APP_VERSION__)) {
