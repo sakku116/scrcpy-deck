@@ -33,6 +33,24 @@ if (cmd === 'update') {
         }
         process.exit(0);
     });
+} else if (cmd === 'uninstall') {
+    console.log('To uninstall ScrcpyDeck, run:\n');
+    console.log('  irm https://raw.githubusercontent.com/sakku116/scrcpy-deck/master/scripts/uninstall.ps1 | iex\n');
+    console.log('This will remove the installation directory and PATH entry.');
+    console.log('You will be asked whether to keep your user data (devices, config).');
+    process.exit(0);
+} else if (cmd === 'help' || cmd === '--help' || cmd === '-h') {
+    console.log(`ScrcpyDeck v${__APP_VERSION__}\n`);
+    console.log('Usage: scrcpy-deck [command]\n');
+    console.log('Commands:');
+    console.log('  (none)       Start the server');
+    console.log('  update       Check for a newer version and print upgrade instructions');
+    console.log('  uninstall    Print uninstall instructions');
+    console.log('  help         Show this help message\n');
+    console.log('Flags:');
+    console.log('  --version, -v    Print the current version and exit');
+    console.log('  --help,    -h    Show this help message');
+    process.exit(0);
 } else {
     startServer();
 }
