@@ -6,6 +6,17 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.4.0] — 2026-06-17
+
+### Features
+- Added `uninstall.ps1` — one-liner uninstall via `irm …/uninstall.ps1 | iex`, with prompt to keep or delete user data
+
+### Fixes
+- `install.ps1` now unblocks bundled `adb.exe` and DLLs after extract so ADB starts automatically without user intervention
+- Server exit handler now logs correct signal name (`SIGINT`/`SIGTERM`) instead of `undefined`
+
+---
+
 ## [0.3.0] — 2026-06-16
 
 ### Features
