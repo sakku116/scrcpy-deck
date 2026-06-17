@@ -123,8 +123,12 @@ export class AdbBinary {
     }
 
     /** Ensures the adb server is running so subsequent commands are fast. */
-    public static async startServer(): Promise<void> {
-        await AdbBinary.exec(['start-server']);
+    public static async startServer(retries = 3, delayMs = 1500): Promise<void> {
+        for (let i = 0; i < retries; i++) {
+            const result = await AdbBinary.exec(['start-server']);
+            if (result.code === 0 && !result.failedToSpawn) return;
+            if (i < retries - 1) await new Promise((r) => setTimeout(r, delayMs));
+        }
     }
 }
 
