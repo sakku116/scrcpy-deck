@@ -28,6 +28,9 @@ if (Test-Path $installDir) { Remove-Item $installDir -Recurse -Force }
 Expand-Archive $zip -DestinationPath $installDir
 Remove-Item $zip
 
+# Remove Zone.Identifier so bundled binaries (adb.exe, etc.) are not blocked by SmartScreen on first run.
+Get-ChildItem -Path $installDir -Recurse -Include "*.exe","*.dll" | ForEach-Object { Unblock-File $_.FullName }
+
 # Add to user PATH if not already there
 $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
 if ($currentPath -notlike "*$installDir*") {
