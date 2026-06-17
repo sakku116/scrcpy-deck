@@ -6,6 +6,16 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.5.0] — 2026-06-17
+
+### Features
+- ADB daemon is now stopped automatically when ScrcpyDeck shuts down (Ctrl+C)
+
+### Fixes
+- `uninstall.ps1` now kills the ADB daemon before removing files, fixing "Access denied" on `adb.exe`
+
+---
+
 ## [0.4.0] — 2026-06-17
 
 ### Features
