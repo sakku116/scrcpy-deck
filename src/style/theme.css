@@ -5,27 +5,32 @@
 :root {
     --sd-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
-    --sd-accent: hsl(212, 78%, 47%);
-    --sd-accent-hover: hsl(212, 78%, 41%);
+    --sd-accent: hsl(178, 62%, 38%);
+    --sd-accent-hover: hsl(178, 62%, 32%);
     --sd-accent-contrast: hsl(0, 0%, 100%);
-    --sd-accent-soft: hsla(212, 78%, 47%, 0.1);
+    --sd-accent-soft: hsla(178, 62%, 38%, 0.1);
 
-    --sd-bg: hsl(220, 16%, 97%);
+    --sd-bg: hsl(200, 20%, 98%);
     --sd-surface: hsl(0, 0%, 100%);
-    --sd-surface-2: hsl(220, 16%, 95%);
-    --sd-border: hsl(220, 13%, 88%);
-    --sd-text: hsl(220, 18%, 20%);
-    --sd-text-muted: hsl(220, 9%, 46%);
+    --sd-surface-2: hsl(200, 18%, 96%);
+    --sd-border: hsl(205, 16%, 91%);
+    --sd-text: hsl(208, 20%, 22%);
+    --sd-text-muted: hsl(206, 10%, 50%);
 
-    --sd-ok: hsl(145, 55%, 42%);
+    --sd-ok: hsl(160, 52%, 40%);
     --sd-error: hsl(0, 65%, 52%);
     --sd-pending: hsl(35, 85%, 48%);
 
-    --sd-radius: 10px;
-    --sd-radius-sm: 7px;
+    --sd-radius: 14px;
+    --sd-radius-sm: 9px;
     --sd-gap: 12px;
-    --sd-shadow: 0 1px 2px hsla(220, 18%, 20%, 0.06);
-    --sd-shadow-lifted: 0 8px 24px hsla(220, 18%, 20%, 0.12);
+    --sd-gap-sm: 8px;
+    --sd-gap-md: 16px;
+    --sd-gap-lg: 24px;
+    --sd-anim: 0.16s;
+    --sd-icon-phone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='2.5' width='12' height='19' rx='2.5'/%3E%3Cline x1='10.5' y1='18.5' x2='13.5' y2='18.5'/%3E%3C/svg%3E");
+    --sd-shadow: 0 1px 2px hsla(208, 20%, 22%, 0.05);
+    --sd-shadow-lifted: 0 12px 40px hsla(208, 24%, 18%, 0.14);
 
     /* Re-point inherited ws-scrcpy tokens. */
     --stream-bg-color: #000;
@@ -47,19 +52,19 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --sd-accent: hsl(212, 90%, 64%);
-        --sd-accent-hover: hsl(212, 90%, 70%);
-        --sd-accent-contrast: hsl(220, 25%, 10%);
-        --sd-accent-soft: hsla(212, 90%, 64%, 0.14);
+        --sd-accent: hsl(176, 60%, 52%);
+        --sd-accent-hover: hsl(176, 60%, 58%);
+        --sd-accent-contrast: hsl(200, 30%, 8%);
+        --sd-accent-soft: hsla(176, 60%, 52%, 0.14);
 
-        --sd-bg: hsl(220, 16%, 10%);
-        --sd-surface: hsl(220, 14%, 14%);
-        --sd-surface-2: hsl(220, 13%, 18%);
-        --sd-border: hsl(220, 10%, 26%);
-        --sd-text: hsl(220, 16%, 92%);
-        --sd-text-muted: hsl(220, 8%, 60%);
+        --sd-bg: hsl(206, 22%, 9%);
+        --sd-surface: hsl(206, 18%, 13%);
+        --sd-surface-2: hsl(206, 16%, 17%);
+        --sd-border: hsl(206, 12%, 25%);
+        --sd-text: hsl(200, 16%, 92%);
+        --sd-text-muted: hsl(204, 9%, 62%);
 
-        --sd-ok: hsl(145, 50%, 55%);
+        --sd-ok: hsl(160, 50%, 55%);
         --sd-error: hsl(0, 70%, 65%);
         --sd-pending: hsl(35, 90%, 60%);
 

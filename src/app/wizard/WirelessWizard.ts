@@ -57,6 +57,12 @@ export class WirelessWizard {
         closeBtn.textContent = '×';
         closeBtn.addEventListener('click', () => this.close());
 
+        const header = document.createElement('div');
+        header.className = 'sd-modal-header';
+        header.innerHTML =
+            '<div class="sd-modal-title">Connect a device wirelessly</div>' +
+            '<div class="sd-modal-subtitle">Pick the flow that matches your phone, then follow the steps.</div>';
+
         const tabs = document.createElement('div');
         tabs.className = 'sd-tabs';
         const classicTab = this.makeTabButton('classic', 'Classic (USB once)');
@@ -74,7 +80,7 @@ export class WirelessWizard {
         adbInfo.className = 'sd-adb-info';
         adbInfo.id = 'sd-adb-info';
 
-        modal.append(closeBtn, tabs, body, this.statusEl, adbInfo);
+        modal.append(closeBtn, header, tabs, body, this.statusEl, adbInfo);
         overlay.appendChild(modal);
         this.setActiveTab('classic', overlay);
         return overlay;

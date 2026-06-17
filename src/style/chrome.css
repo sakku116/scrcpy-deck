@@ -6,32 +6,50 @@
     left: 0;
     right: 0;
     z-index: 40;
-    height: 56px;
-    background-color: var(--sd-surface);
+    height: 64px;
+    background-color: hsla(0, 0%, 100%, 0.8);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    backdrop-filter: saturate(1.4) blur(12px);
     border-bottom: 1px solid var(--sd-border);
 }
 
+@media (prefers-color-scheme: dark) {
+    .sd-header {
+        background-color: hsla(206, 18%, 13%, 0.8);
+    }
+}
+
 .sd-header-inner {
-    max-width: 880px;
+    max-width: 760px;
     height: 100%;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .sd-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
     font-family: var(--sd-font);
-    font-size: 1.05rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
     color: var(--sd-text);
+}
+
+.sd-logo {
+    width: 22px;
+    height: 22px;
+    color: var(--sd-accent);
 }
 
 .sd-brand b {
     color: var(--sd-accent);
+    font-weight: 700;
 }
 
 .sd-btn {
@@ -140,16 +158,25 @@ body.sd-mirroring .device-view > .video > .video-layer {
     gap: 6px;
     font-size: 0.875rem;
     font-weight: 600;
-    padding: 6px 12px;
+    padding: 6px 12px 6px 9px;
     border-radius: var(--sd-radius-sm);
     border: 1px solid var(--sd-border);
     background-color: var(--sd-surface);
     color: var(--sd-text);
     cursor: pointer;
+    transition: background-color var(--sd-anim), border-color var(--sd-anim);
+}
+
+.sd-mirror-back svg,
+.sd-mirror-settings-btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .sd-mirror-back:hover {
     background-color: var(--sd-surface-2);
+    border-color: var(--sd-accent);
 }
 
 .sd-mirror-title {
@@ -161,17 +188,17 @@ body.sd-mirroring .device-view > .video > .video-layer {
 .sd-mirror-settings-btn {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     font-size: 0.82rem;
     font-weight: 600;
     font-family: var(--sd-font);
-    padding: 6px 12px;
+    padding: 6px 12px 6px 9px;
     border-radius: var(--sd-radius-sm);
     border: 1px solid var(--sd-border);
     background: var(--sd-surface);
     color: var(--sd-text-muted);
     cursor: pointer;
-    transition: color 0.12s, border-color 0.12s, background 0.12s;
+    transition: color var(--sd-anim), border-color var(--sd-anim), background var(--sd-anim);
 }
 
 .sd-mirror-settings-btn:hover {
@@ -228,7 +255,7 @@ body.sd-mirroring .device-view > .video > .video-layer {
 }
 
 .sd-picker-recommended:hover {
-    background: hsla(212, 78%, 47%, 0.18);
+    background: var(--sd-accent-soft);
 }
 
 .sd-picker-item-row {
@@ -364,4 +391,203 @@ body.sd-mirroring .device-view > .video > .video-layer {
     font-size: 14px;
     line-height: 1;
     padding: 2px 4px;
+}
+
+/* ── Stream config dialog (inherited ws-scrcpy ConfigureScrcpy) ──
+   Scoped to .configureDialog so other inherited dialogs are untouched. Re-skins
+   the form as a centered, themed modal using the shared tokens. */
+
+.dialog-background.configureDialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: hsla(208, 24%, 12%, 0.5);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+}
+
+.dialog-container.configureDialog {
+    font-family: var(--sd-font);
+    width: auto;
+    min-width: 360px;
+    max-width: 440px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--sd-surface);
+    color: var(--sd-text);
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius);
+    box-shadow: var(--sd-shadow-lifted);
+    overflow: hidden;
+}
+
+/* Neutralize the inherited full-height behavior. */
+.dialog-container.configureDialog.ready {
+    height: auto;
+    min-height: 0;
+}
+
+.dialog-container.configureDialog button,
+.dialog-container.configureDialog select,
+.dialog-container.configureDialog input {
+    font-family: var(--sd-font);
+}
+
+.dialog-header.configureDialog {
+    background-color: var(--sd-surface);
+    border-bottom: 1px solid var(--sd-border);
+    height: auto;
+    padding: 14px 18px;
+    gap: 8px;
+}
+
+.dialog-header.configureDialog span.dialog-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--sd-text);
+}
+
+/* Back button — clean icon button instead of the inherited dark control box. */
+.dialog-header.configureDialog .control-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: var(--sd-surface);
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius-sm);
+    cursor: pointer;
+    transition: border-color var(--sd-anim), background var(--sd-anim);
+}
+
+.dialog-header.configureDialog .control-button:hover {
+    border-color: var(--sd-accent);
+    background: var(--sd-accent-soft);
+}
+
+.dialog-header.configureDialog .control-button svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--sd-text-muted);
+}
+
+.dialog-body.configureDialog {
+    background-color: var(--sd-surface);
+    overflow: auto;
+}
+
+.dialog-body.configureDialog.visible {
+    height: auto;
+}
+
+.configureDialog .controls {
+    grid-template-columns: [labels] 40% [controls] 60%;
+    grid-gap: 14px;
+    padding: 16px 20px;
+}
+
+/* Stacked .controls blocks (player / main / buttons) — don't double the vertical
+   padding between them, keep one consistent gap. */
+.configureDialog .controls + .controls {
+    padding-top: 0;
+}
+
+/* Buttons block gets a divider above it. */
+.configureDialog .controls:has(.button) {
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 1px solid var(--sd-border);
+}
+
+.configureDialog .label {
+    font-size: 0.85rem;
+    color: var(--sd-text-muted);
+}
+
+.configureDialog .input,
+.configureDialog select.input,
+.configureDialog input.input {
+    padding: 9px 10px;
+    font-size: 0.875rem;
+    color: var(--sd-text);
+    background: var(--sd-surface);
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius-sm);
+    transition: border-color var(--sd-anim), box-shadow var(--sd-anim);
+}
+
+.configureDialog .input:focus {
+    outline: none;
+    border-color: var(--sd-accent);
+    box-shadow: 0 0 0 3px var(--sd-accent-soft);
+}
+
+/* Native range sliders + checkboxes pick up the accent for free. */
+.configureDialog input[type='range'] {
+    accent-color: var(--sd-accent);
+}
+
+/* Secondary buttons (Reset / Load / Save). */
+.configureDialog .controls .button {
+    grid-column: 1 / -1;
+    padding: 9px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--sd-text);
+    background: var(--sd-surface);
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius-sm);
+    cursor: pointer;
+    transition: border-color var(--sd-anim), background var(--sd-anim);
+}
+
+.configureDialog .controls .button:hover {
+    border-color: var(--sd-accent);
+    background: var(--sd-accent-soft);
+}
+
+.dialog-footer.configureDialog {
+    background-color: var(--sd-surface);
+    border-top: 1px solid var(--sd-border);
+    height: auto;
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+}
+
+.dialog-footer.configureDialog span.subtitle {
+    float: none;
+    line-height: 1.3;
+    font-size: 0.8rem;
+    color: var(--sd-text-muted);
+}
+
+/* The OK / Open button — primary teal. */
+.dialog-footer.configureDialog button {
+    float: none;
+    margin-left: auto;
+    height: auto;
+    padding: 9px 18px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--sd-accent-contrast);
+    background-color: var(--sd-accent);
+    border: 1px solid var(--sd-accent);
+    border-radius: var(--sd-radius-sm);
+    cursor: pointer;
+    transition: background-color var(--sd-anim);
+}
+
+.dialog-footer.configureDialog button:hover:not(:disabled) {
+    background-color: var(--sd-accent-hover);
+    border-color: var(--sd-accent-hover);
+}
+
+.dialog-footer.configureDialog button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
