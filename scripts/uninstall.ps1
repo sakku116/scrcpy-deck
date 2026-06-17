@@ -19,6 +19,12 @@ if ($keepData -eq '' -or $keepData -match '^[Yy]') {
     $keepData = $false
 }
 
+$adbExe = "$installDir\vendor\win\adb.exe"
+if (Test-Path $adbExe) {
+    Write-Host "Stopping ADB daemon..."
+    try { & $adbExe kill-server 2>$null } catch {}
+}
+
 Write-Host "Removing $installDir..."
 Remove-Item $installDir -Recurse -Force
 

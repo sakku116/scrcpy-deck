@@ -173,5 +173,6 @@ function startServer() {
             console.log(`Stopping ${serviceName} ...`);
             service.release();
         });
+        AdbBinary.exec(['kill-server']).then(() => process.exit(0));
     }
 }
