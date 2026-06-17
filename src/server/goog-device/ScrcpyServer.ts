@@ -8,7 +8,10 @@ import PushTransfer from '@dead50f7/adbkit/lib/adb/sync/pushtransfer';
 import { ServerVersion } from './ServerVersion';
 
 const TEMP_PATH = '/data/local/tmp/';
-const FILE_DIR = path.join(__dirname, 'vendor/Genymobile/scrcpy');
+const IS_PACKAGED = !!(process as unknown as { pkg?: unknown }).pkg;
+const FILE_DIR = IS_PACKAGED
+    ? path.join(path.dirname(process.execPath), 'vendor/Genymobile/scrcpy')
+    : path.join(__dirname, 'vendor/Genymobile/scrcpy');
 const FILE_NAME = 'scrcpy-server.jar';
 const RUN_COMMAND = `CLASSPATH=${TEMP_PATH}${FILE_NAME} nohup app_process ${ARGS_STRING}`;
 
