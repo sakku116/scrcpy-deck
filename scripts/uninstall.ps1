@@ -19,6 +19,9 @@ if ($keepData -eq '' -or $keepData -match '^[Yy]') {
     $keepData = $false
 }
 
+Write-Host "Stopping ScrcpyDeck..."
+Get-Process -Name "ScrcpyDeck" -ErrorAction SilentlyContinue | Stop-Process -Force
+
 $adbExe = "$installDir\vendor\win\adb.exe"
 if (Test-Path $adbExe) {
     Write-Host "Stopping ADB daemon..."
