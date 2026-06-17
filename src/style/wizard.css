@@ -9,10 +9,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: hsla(220, 18%, 12%, 0.45);
+    background: hsla(208, 24%, 12%, 0.5);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.15s ease;
+    transition: opacity var(--sd-anim) ease;
 }
 .sd-overlay.sd-visible {
     opacity: 1;
@@ -21,7 +23,7 @@
 
 .sd-modal {
     position: relative;
-    width: 460px;
+    width: 480px;
     max-width: calc(100vw - 32px);
     max-height: calc(100vh - 48px);
     overflow-y: auto;
@@ -29,30 +31,55 @@
     color: var(--sd-text);
     border: 1px solid var(--sd-border);
     border-radius: var(--sd-radius);
-    padding: 20px 22px;
+    padding: 28px 28px 24px;
     box-shadow: var(--sd-shadow-lifted);
     font-family: var(--sd-font);
+    transform: translateY(8px) scale(0.98);
+    transition: transform var(--sd-anim) ease;
+}
+.sd-overlay.sd-visible .sd-modal {
+    transform: none;
 }
 
 .sd-close {
     position: absolute;
-    top: 10px;
-    right: 14px;
+    top: 16px;
+    right: 18px;
     background: none;
     border: none;
     color: var(--sd-text-muted);
     font-size: 26px;
     line-height: 1;
     cursor: pointer;
+    transition: color var(--sd-anim);
 }
 .sd-close:hover {
     color: var(--sd-text);
 }
 
+.sd-modal-header {
+    margin-bottom: 4px;
+}
+.sd-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--sd-text);
+}
+.sd-modal-subtitle {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--sd-text-muted);
+}
+
 .sd-tabs {
     display: flex;
-    gap: 6px;
-    margin: 16px 0 12px;
+    gap: 4px;
+    margin: 20px 0 16px;
+    padding: 4px;
+    background: var(--sd-surface-2);
+    border-radius: var(--sd-radius-sm);
 }
 .sd-tab {
     flex: 1;
@@ -60,21 +87,25 @@
     font-size: 13px;
     font-weight: 600;
     color: var(--sd-text-muted);
-    background: var(--sd-surface-2);
-    border: 1px solid var(--sd-border);
-    border-radius: var(--sd-radius-sm);
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--sd-radius-sm) - 4px);
     cursor: pointer;
+    transition: color var(--sd-anim), background var(--sd-anim), box-shadow var(--sd-anim);
+}
+.sd-tab:hover {
+    color: var(--sd-text);
 }
 .sd-tab.sd-active {
-    color: var(--sd-accent-contrast);
-    background: var(--sd-accent);
-    border-color: var(--sd-accent);
+    color: var(--sd-accent);
+    background: var(--sd-surface);
+    box-shadow: var(--sd-shadow);
 }
 
 .sd-pane {
     display: none;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 .sd-pane.sd-active {
     display: flex;
@@ -84,25 +115,30 @@
     margin: 0 0 4px;
     padding-left: 20px;
     font-size: 13px;
-    line-height: 1.5;
+    line-height: 1.6;
     color: var(--sd-text-muted);
+}
+.sd-steps li {
+    margin-bottom: 4px;
 }
 
 .sd-input {
-    padding: 9px 10px;
+    padding: 11px 12px;
     font-size: 14px;
     color: var(--sd-text);
     background: var(--sd-surface);
     border: 1px solid var(--sd-border);
     border-radius: var(--sd-radius-sm);
+    transition: border-color var(--sd-anim), box-shadow var(--sd-anim);
 }
 .sd-input:focus {
     outline: none;
     border-color: var(--sd-accent);
+    box-shadow: 0 0 0 3px var(--sd-accent-soft);
 }
 
 .sd-primary {
-    padding: 10px;
+    padding: 12px;
     font-size: 14px;
     font-weight: 600;
     color: var(--sd-accent-contrast);
@@ -110,6 +146,7 @@
     border: none;
     border-radius: var(--sd-radius-sm);
     cursor: pointer;
+    transition: background var(--sd-anim);
 }
 .sd-primary:hover {
     background: var(--sd-accent-hover);

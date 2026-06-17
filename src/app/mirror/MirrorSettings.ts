@@ -27,12 +27,18 @@ export class MirrorSettings {
     }
 
     /**
-     * Pushes the default quality preset to the device so the actual stream
-     * matches the option highlighted in the panel. ws-scrcpy starts a stream
-     * with the encoder's own defaults, which otherwise leaves the picture lower
-     * than the "High" the UI shows.
+     * Syncs the panel to the live stream's settings. If the stream was started
+     * with explicit settings (e.g. from the config dialog) we adopt them so the
+     * panel and the picture agree. Only when the stream has no settings yet do we
+     * push our default preset, so ws-scrcpy's bare encoder default isn't left as-is.
      */
     public applyDefaults(): void {
+        const current = this.client.getVideoSettings();
+        if (current) {
+            this.activeQuality = this.detectQualityIndex(current);
+            this.activeFps = this.detectFpsIndex(current);
+            return;
+        }
         this.applyVideoSettings();
     }
 
