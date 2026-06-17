@@ -24,7 +24,11 @@ if ((Test-Path $legacyData) -and (-not (Test-Path $newDataDir))) {
     Write-Host "Migrating user data to $newDataDir ..."
     Copy-Item -Path $legacyData -Destination $newDataDir -Recurse -Force
 }
-if (Test-Path $installDir) { Remove-Item $installDir -Recurse -Force }
+if (Test-Path $installDir) {
+    $adbExe = "$installDir\vendor\win\adb.exe"
+    if (Test-Path $adbExe) { try { & $adbExe kill-server 2>$null } catch {} }
+    Remove-Item $installDir -Recurse -Force
+}
 Expand-Archive $zip -DestinationPath $installDir
 Remove-Item $zip
 
