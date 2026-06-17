@@ -6,6 +6,21 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.7.0] — 2026-06-18
+
+### Features
+- Full UI modernization: minimal & airy design with teal accent (light + dark)
+- Device list: airier cards, consistent spacing, SVG phone avatar replacing emoji
+- Header: centered brand with inline SVG logo mark, frosted-glass backdrop
+- Mirror bar: SVG back-arrow and gear icons replace unicode glyphs
+- Wireless wizard: modal title/subtitle header, segmented-control tabs, scale-in animation
+- Stream config dialog: themed as a clean centered modal with teal focus rings and proper form rhythm
+
+### Fixes
+- `MirrorSettings` no longer overwrites stream settings set via the config dialog on session start
+
+---
+
 ## [0.6.1] — 2026-06-17
 
 ### Fixes
