@@ -9,7 +9,7 @@ body.list {
 #devices {
     box-sizing: border-box;
     width: 100%;
-    padding: 76px 24px 48px;
+    padding: 96px 24px 64px;
     overflow-y: auto;
 }
 
@@ -31,14 +31,14 @@ body.list #device_list_menu { display: none; }
 /* ── List wrapper ── */
 
 #devices .table-wrapper {
-    max-width: 720px;
+    max-width: 760px;
     margin: 0 auto;
 }
 
 #devices .device-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--sd-gap-md);
     font-family: var(--sd-font);
 }
 
@@ -62,13 +62,13 @@ body.list #device_list_menu { display: none; }
     background: var(--sd-surface);
     border: 1px solid var(--sd-border);
     border-radius: var(--sd-radius);
-    padding: 18px 20px;
-    transition: border-color 0.14s, box-shadow 0.14s;
+    padding: 22px 24px;
+    transition: border-color var(--sd-anim), box-shadow var(--sd-anim);
 }
 
 #devices .device:hover {
     border-color: var(--sd-accent);
-    box-shadow: 0 0 0 3px var(--sd-accent-soft);
+    box-shadow: 0 0 0 4px var(--sd-accent-soft);
 }
 
 /* Offline cards dim, and their action buttons are inert — but the card itself
@@ -91,18 +91,24 @@ body.list #device_list_menu { display: none; }
 
 #devices .device-avatar {
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 13px;
     background: var(--sd-accent-soft);
-    font-size: 22px;
-    line-height: 1;
 }
 
-#devices .device-avatar::before { content: '📱'; }
+/* Clean phone glyph, tinted with the accent (CSS-only, no markup change). */
+#devices .device-avatar::before {
+    content: '';
+    width: 22px;
+    height: 22px;
+    background-color: var(--sd-accent);
+    -webkit-mask: var(--sd-icon-phone) center / contain no-repeat;
+    mask: var(--sd-icon-phone) center / contain no-repeat;
+}
 
 #devices .device-identity {
     flex: 1;
@@ -120,7 +126,8 @@ body.list #device_list_menu { display: none; }
 #devices .device-name {
     flex: 1;
     font-size: 1.05rem;
-    font-weight: 700;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--sd-text);
     white-space: nowrap;
     overflow: hidden;
@@ -172,8 +179,8 @@ body.list #device_list_menu { display: none; }
 }
 
 #devices .device-transport-wireless {
-    background: hsla(210, 90%, 55%, 0.14);
-    color: var(--sd-accent, hsl(210, 90%, 60%));
+    background: var(--sd-accent-soft);
+    color: var(--sd-accent);
 }
 
 #devices .device-transport-usb {
@@ -304,10 +311,11 @@ body.list #device_list_menu { display: none; }
 }
 
 #devices .sd-add-hint-title {
-    font-size: 1.15rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--sd-text);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 #devices .sd-add-hint p {
@@ -320,7 +328,7 @@ body.list #device_list_menu { display: none; }
 
 /* When no real devices: expand the card and reveal the empty-state copy */
 #devices .device-list.sd-list-empty .sd-add-card {
-    padding: 64px 24px;
+    padding: 88px 24px;
 }
 
 #devices .device-list.sd-list-empty .sd-add-hint {
@@ -342,9 +350,9 @@ body.list #device_list_menu { display: none; }
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 18px;
-    padding-top: 16px;
+    gap: var(--sd-gap);
+    margin-top: 22px;
+    padding-top: 20px;
     border-top: 1px solid var(--sd-border);
 }
 
@@ -376,17 +384,17 @@ body.list #device_list_menu { display: none; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     padding: 0;
-    border-radius: 10px;
+    border-radius: var(--sd-radius-sm);
     border: 1px solid var(--sd-border);
     background: var(--sd-surface);
     color: var(--sd-text-muted);
     cursor: pointer;
     font-size: 0;          /* hide text content */
     text-decoration: none;
-    transition: border-color 0.12s, color 0.12s, background 0.12s;
+    transition: border-color var(--sd-anim), color var(--sd-anim), background var(--sd-anim);
 }
 
 #devices .desc-block.file-listing a.link-list-files svg,
@@ -417,17 +425,17 @@ body.list #device_list_menu { display: none; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     padding: 0;
-    border-radius: 10px;
+    border-radius: var(--sd-radius-sm);
     border: none;
     background: var(--sd-accent);
     color: var(--sd-accent-contrast);
     cursor: pointer;
     font-size: 0;
     text-decoration: none;
-    transition: background 0.14s, box-shadow 0.14s;
+    transition: background var(--sd-anim), box-shadow var(--sd-anim);
 }
 
 #devices .desc-block.sd-player-primary a.link-stream::before { content: none; }

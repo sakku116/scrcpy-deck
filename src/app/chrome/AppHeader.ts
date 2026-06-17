@@ -30,7 +30,12 @@ export class AppHeader {
 
         const brand = document.createElement('div');
         brand.className = 'sd-brand';
-        brand.innerHTML = 'Scrcpy<b>Deck</b>';
+        brand.innerHTML =
+            '<svg class="sd-logo" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+            '<rect x="6" y="2.5" width="12" height="19" rx="2.5" stroke="currentColor" stroke-width="1.8"/>' +
+            '<path d="M9.5 9.5l3.5 2.5-3.5 2.5" stroke="currentColor" stroke-width="1.8" ' +
+            'stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '<span>Scrcpy<b>Deck</b></span>';
 
         inner.appendChild(brand);
         header.appendChild(inner);
