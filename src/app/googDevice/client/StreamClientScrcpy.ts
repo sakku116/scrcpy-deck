@@ -227,6 +227,13 @@ export class StreamClientScrcpy
             this.player.setScreenInfo(screenInfo);
         }
 
+        // ScrcpyDeck: the play() above runs before screenInfo is known, so for
+        // players that require it first (Broadway/TinyH264) that call no-ops and is
+        // never retried — leaving them paused and the canvas black. Retry now.
+        if (this.player.getState() === BasePlayer.STATE.PAUSED) {
+            this.player.play();
+        }
+
         if (!videoSettings.equals(currentSettings)) {
             this.applyNewVideoSettings(videoSettings, videoSettings.equals(this.requestedVideoSettings));
         }
