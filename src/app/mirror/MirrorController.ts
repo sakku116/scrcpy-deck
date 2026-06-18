@@ -87,7 +87,13 @@ export class MirrorController {
         // width/height attributes. Reading those (not the styled .video box) keeps
         // the natural size source separate from the box we resize, so there is no
         // observer feedback loop.
-        const readNatural = (): void => {
+        // `live` is false for the initial synchronous read: at attach time the
+        // canvas still has its placeholder size and the socket isn't open yet.
+        // Applying defaults there only buffers a request the first-join
+        // negotiation clobbers with the low default. The observer fires when
+        // setScreenInfo writes the real device resolution — by then the stream
+        // has joined, so pushing the preset there sticks.
+        const readNatural = (live: boolean): void => {
             const w = canvas.width;
             const h = canvas.height;
             if (!w || !h) {
@@ -96,15 +102,13 @@ export class MirrorController {
             MirrorController.naturalW = w;
             MirrorController.naturalH = h;
             MirrorController.applyScale();
-            // Stream is live now; push the default quality so the picture matches
-            // the preset the settings panel shows (only once per session).
-            if (!MirrorController.defaultsApplied) {
+            if (live && !MirrorController.defaultsApplied) {
                 MirrorController.defaultsApplied = true;
                 MirrorController.settings?.applyDefaults();
             }
         };
 
-        const obs = new MutationObserver(readNatural);
+        const obs = new MutationObserver(() => readNatural(true));
         obs.observe(canvas, { attributes: true, attributeFilter: ['width', 'height'] });
         MirrorController.sizeObserver = obs;
 
@@ -112,7 +116,7 @@ export class MirrorController {
         MirrorController.onWindowResize = onResize;
         window.addEventListener('resize', onResize);
 
-        readNatural();
+        readNatural(false);
     }
 
     private static applyScale(): void {
