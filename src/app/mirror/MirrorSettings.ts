@@ -26,19 +26,11 @@ export class MirrorSettings {
         this.onFitModeChange = onFitModeChange;
     }
 
-    /**
-     * Syncs the panel to the live stream's settings. If the stream was started
-     * with explicit settings (e.g. from the config dialog) we adopt them so the
-     * panel and the picture agree. Only when the stream has no settings yet do we
-     * push our default preset, so ws-scrcpy's bare encoder default isn't left as-is.
-     */
+    // The mirror starts with no explicit settings, so the stream runs at the
+    // player's bare default (often high bitrate but low resolution). Adopting it
+    // would leave the panel showing "High" while the picture stays soft, so we
+    // enforce the selected preset — same effect as clicking the button.
     public applyDefaults(): void {
-        const current = this.client.getVideoSettings();
-        if (current) {
-            this.activeQuality = this.detectQualityIndex(current);
-            this.activeFps = this.detectFpsIndex(current);
-            return;
-        }
         this.applyVideoSettings();
     }
 

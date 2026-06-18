@@ -19,6 +19,9 @@ export class BroadwayPlayer extends BaseCanvasBasedPlayer {
         iFrameInterval: 5,
         bounds: new Size(480, 480),
         sendFrameMeta: false,
+        // Broadway.js only decodes H.264 baseline; without this scrcpy encodes High
+        // profile and the decoder silently produces no frames (black screen).
+        codecOptions: 'profile=1',
     });
 
     protected canvas?: Canvas;

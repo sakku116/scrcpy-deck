@@ -26,6 +26,9 @@ export class TinyH264Player extends BaseCanvasBasedPlayer {
         iFrameInterval: 5,
         bounds: new Size(480, 480),
         sendFrameMeta: false,
+        // TinyH264 only decodes H.264 baseline; without this scrcpy encodes High
+        // profile and the decoder silently produces no frames (black screen).
+        codecOptions: 'profile=1',
     });
 
     private worker?: TinyH264Worker;
