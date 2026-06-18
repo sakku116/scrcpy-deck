@@ -6,6 +6,14 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.7.1] — 2026-06-19
+
+### Fixes
+- Mirror: apply the selected quality preset on stream start so the picture matches the panel (previously showed "High" while running at low resolution)
+- Players: fix black screen on Default (Broadway.js) and Lightweight (TinyH264) — request H.264 baseline profile, which these decoders require, and retry playback once screen info is set so canvas players leave the paused state
+
+---
+
 ## [0.7.0] — 2026-06-18
 
 ### Features
