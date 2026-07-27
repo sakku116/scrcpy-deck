@@ -6,6 +6,18 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.8.0] — 2026-07-27
+
+### Features
+- Mirror: add a chromeless, embeddable stream URL (`embed=1`) with a copy button in the streaming-method picker, for use as an OBS Studio Browser Source
+
+### Fixes
+- Player: flush stale frame backlog and force a fresh keyframe when a hidden tab regains focus, instead of playing out the backlog
+- Player: fix off-by-one in WebGL context probe that skipped `webgl` entirely, causing a black render in embedders without the legacy `experimental-webgl` alias (e.g. OBS Browser Source)
+- Build: ship a POSIX wrapper for `scrcpy-deck` alongside the exe so Git Bash / MSYS can resolve it on PATH
+
+---
+
 ## [0.7.1] — 2026-06-19
 
 ### Fixes
