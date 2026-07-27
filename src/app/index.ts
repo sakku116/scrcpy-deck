@@ -32,6 +32,11 @@ window.onload = async function (): Promise<void> {
     /// #endif
 
     if (action === StreamClientScrcpy.ACTION && typeof parsedQuery.get('udid') === 'string') {
+        // Chromeless, full-bleed layout for embedding the raw device screen
+        // (e.g. OBS Browser Source) — see body.sd-embed rules in chrome.css.
+        if (parsedQuery.get('embed') === '1') {
+            document.body.classList.add('sd-embed');
+        }
         StreamClientScrcpy.start(parsedQuery);
         return;
     }

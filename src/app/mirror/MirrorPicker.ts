@@ -4,7 +4,13 @@ import { MirrorController } from './MirrorController';
 export type PlayerOption = {
     playerName: string;
     mirrorParams: ParamsStreamScrcpy;
+    url: string;
 };
+
+const SVG_COPY =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/>' +
+    '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 
 const LABELS: Record<string, { title: string; hint: string }> = {
     'Broadway.js': { title: 'Default', hint: 'Most compatible — works on all devices' },
@@ -62,8 +68,12 @@ export class MirrorPicker {
 
         options.forEach((opt, i) => {
             const meta = LABELS[opt.playerName] ?? { title: opt.playerName, hint: '' };
-            const btn = document.createElement('button');
-            btn.className = 'sd-picker-item' + (i === 0 ? ' sd-picker-recommended' : '');
+            // ScrcpyDeck: a real <button> can't nest the copy button, so use a div
+            // acting as the clickable row instead.
+            const item = document.createElement('div');
+            item.className = 'sd-picker-item' + (i === 0 ? ' sd-picker-recommended' : '');
+            item.setAttribute('role', 'button');
+            item.tabIndex = 0;
 
             const row = document.createElement('div');
             row.className = 'sd-picker-item-row';
@@ -81,16 +91,30 @@ export class MirrorPicker {
                 row.append(title);
             }
 
+            const copyBtn = document.createElement('button');
+            copyBtn.type = 'button';
+            copyBtn.className = 'sd-picker-copy-btn';
+            copyBtn.title = 'Copy embeddable stream URL (for OBS Browser Source)';
+            copyBtn.innerHTML = SVG_COPY;
+            copyBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                navigator.clipboard.writeText(opt.url).then(() => {
+                    copyBtn.classList.add('sd-copied');
+                    setTimeout(() => copyBtn.classList.remove('sd-copied'), 1200);
+                });
+            });
+            row.appendChild(copyBtn);
+
             const hint = document.createElement('span');
             hint.className = 'sd-picker-item-hint';
             hint.textContent = meta.hint;
 
-            btn.append(row, hint);
-            btn.addEventListener('click', () => {
+            item.append(row, hint);
+            item.addEventListener('click', () => {
                 MirrorPicker.dismiss();
                 MirrorController.open(opt.mirrorParams, deviceName);
             });
-            panel.appendChild(btn);
+            panel.appendChild(item);
         });
 
         return panel;

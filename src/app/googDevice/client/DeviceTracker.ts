@@ -130,12 +130,19 @@ export class DeviceTracker extends BaseDeviceTracker<GoogDeviceDescriptor, never
             const playerFullName = item.getAttribute(DeviceTracker.AttributePlayerFullName);
             const playerCodeName = item.getAttribute(DeviceTracker.AttributePlayerCodeName);
             if (!playerFullName || !playerCodeName) return;
+            const player = decodeURIComponent(playerCodeName);
+            const streamUrl = DeviceTracker.buildLink(
+                { action, udid, player, ws: url, embed: '1' },
+                '',
+                this.params,
+            ).getAttribute('href') as string;
             options.push({
                 playerName: decodeURIComponent(playerFullName),
+                url: streamUrl,
                 mirrorParams: {
                     action,
                     udid,
-                    player: decodeURIComponent(playerCodeName),
+                    player,
                     ws: url,
                     secure: this.params.secure,
                     hostname: this.params.hostname,

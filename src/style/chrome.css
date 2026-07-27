@@ -135,6 +135,51 @@ body.sd-mirroring .device-view > .video > .video-layer {
     object-fit: contain;
 }
 
+/* Chromeless, full-bleed layout for embedding the raw device screen
+   (e.g. OBS Browser Source) — reached via a direct stream link with
+   &embed=1, see index.ts. No controls, no letterboxing beyond aspect fit. */
+body.sd-embed {
+    overflow: hidden;
+    background: #000;
+    margin: 0;
+}
+
+body.sd-embed .device-view {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.sd-embed .device-view > .control-buttons-list,
+body.sd-embed .more-box {
+    display: none !important;
+}
+
+/* !important: BasePlayer sets this box's size via an inline style, sourced
+   from a fitToScreen preference cached in this browser profile's
+   localStorage. OBS's Browser Source runs on its own empty profile, so it
+   negotiates a different box than a regular browser tab does — force full
+   size here so embed mode never depends on that per-profile state. */
+body.sd-embed .device-view > .video {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+}
+
+body.sd-embed .device-view > .video > .video-layer,
+body.sd-embed .device-view > .video > .touch-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
 /* Inline mirror top bar (rendered by MirrorController). */
 .sd-mirror-bar {
     position: fixed;
@@ -283,6 +328,36 @@ body.sd-mirroring .device-view > .video > .video-layer {
 .sd-picker-item-hint {
     font-size: 0.78rem;
     color: var(--sd-text-muted);
+}
+
+.sd-picker-copy-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: none;
+    border-radius: var(--sd-radius-sm);
+    background: transparent;
+    color: var(--sd-text-muted);
+    cursor: pointer;
+}
+
+.sd-picker-copy-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+.sd-picker-copy-btn:hover {
+    background: var(--sd-surface-2);
+    color: var(--sd-text);
+}
+
+.sd-picker-copy-btn.sd-copied {
+    color: var(--sd-accent);
 }
 
 /* ── Inline mirror quality settings ── */
