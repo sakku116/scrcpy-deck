@@ -376,6 +376,12 @@ export abstract class BasePlayer extends TypedEmitter<PlayerEvents> {
         return this.screenInfo;
     }
 
+    // Overridden by decoders that queue frames (see BaseCanvasBasedPlayer) so a
+    // long tab hide/show doesn't play out a stale backlog instead of jumping to now.
+    public flushBufferedFrames(): void {
+        // no-op by default
+    }
+
     public setScreenInfo(screenInfo: ScreenInfo): void {
         if (this.needScreenInfoBeforePlay()) {
             this.pause();
