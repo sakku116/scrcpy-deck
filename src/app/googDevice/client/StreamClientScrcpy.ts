@@ -61,6 +61,7 @@ export class StreamClientScrcpy
     private fitToScreen?: boolean;
     private stopStream?: () => void;
     private readonly streamReceiver: StreamReceiverScrcpy;
+    private hiddenSince = 0;
 
     public static registerPlayer(playerClass: PlayerClass): void {
         if (playerClass.isSupported()) {
@@ -256,7 +257,26 @@ export class StreamClientScrcpy
         }
     };
 
+    // Browsers pause rAF/timers on a hidden tab, so encoded frames pile up
+    // unprocessed instead of being decoded and dropped as they arrive. On
+    // refocus, that backlog would otherwise play out before catching up to
+    // "now". Discard it and force a fresh keyframe instead of replaying it.
+    private onVisibilityChange = (): void => {
+        if (document.hidden) {
+            this.hiddenSince = Date.now();
+            return;
+        }
+        const hiddenSince = this.hiddenSince;
+        this.hiddenSince = 0;
+        if (!hiddenSince || Date.now() - hiddenSince < 1000 || !this.player) {
+            return;
+        }
+        this.player.flushBufferedFrames();
+        this.sendMessage(CommandControlMessage.createSetVideoSettingsCommand(this.player.getVideoSettings()));
+    };
+
     public onDisconnected = (): void => {
+        document.removeEventListener('visibilitychange', this.onVisibilityChange);
         this.streamReceiver.off('deviceMessage', this.OnDeviceMessage);
         this.streamReceiver.off('video', this.onVideo);
         this.streamReceiver.off('clientsStats', this.onClientsStats);
@@ -354,6 +374,7 @@ export class StreamClientScrcpy
         streamReceiver.on('clientsStats', this.onClientsStats);
         streamReceiver.on('displayInfo', this.onDisplayInfo);
         streamReceiver.on('disconnected', this.onDisconnected);
+        document.addEventListener('visibilitychange', this.onVisibilityChange);
         console.log(TAG, player.getName(), udid);
     }
 
