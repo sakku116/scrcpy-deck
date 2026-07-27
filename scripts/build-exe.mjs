@@ -55,4 +55,9 @@ if (existsSync(path.join(root, 'vendor'))) {
 import { writeFileSync } from 'node:fs';
 writeFileSync(path.join(outDir, 'scrcpy-deck.bat'), `@echo off\n"%~dp0${exeName}" %*\n`);
 
+// Git Bash / MSYS don't try a ".bat" suffix when resolving a bare command name
+// (only ".exe"), so `scrcpy-deck` on PATH is invisible to bash even though
+// PowerShell/cmd find it fine via PATHEXT. Ship a plain POSIX wrapper too.
+writeFileSync(path.join(outDir, 'scrcpy-deck'), `#!/bin/sh\nexec "$(dirname "$0")/${exeName}" "$@"\n`);
+
 console.log(`\nDone. Distribute the whole "${path.basename(outDir)}" folder.`);
