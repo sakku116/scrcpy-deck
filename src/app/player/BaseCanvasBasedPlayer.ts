@@ -27,12 +27,13 @@ export abstract class BaseCanvasBasedPlayer extends BasePlayer {
         let index = 0;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let gl: any = null;
-        while (!gl && index++ < validContextNames.length) {
+        while (!gl && index < validContextNames.length) {
             try {
                 gl = testCanvas.getContext(validContextNames[index]);
             } catch (error: any) {
                 gl = null;
             }
+            index++;
         }
         return !!gl;
     }
@@ -232,5 +233,15 @@ export abstract class BaseCanvasBasedPlayer extends BasePlayer {
 
     protected clearState(): void {
         this.framesList = [];
+    }
+
+    public flushBufferedFrames(): void {
+        this.clearState();
+        this.decodedFrames.forEach((data) => this.dropFrame(data.frame));
+        this.decodedFrames = [];
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = undefined;
+        }
     }
 }

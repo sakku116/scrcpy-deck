@@ -198,6 +198,19 @@ export class WebCodecsPlayer extends BaseCanvasBasedPlayer {
         frame.close();
     }
 
+    protected clearState(): void {
+        super.clearState();
+        this.buffer = undefined;
+        this.bufferedSPS = false;
+        this.bufferedPPS = false;
+        // Force the next frame after the flush to wait for a fresh IDR instead of
+        // decoding deltas against reference frames that were just discarded.
+        this.hadIDR = false;
+        if (this.decoder.state !== 'closed') {
+            this.decoder.reset();
+        }
+    }
+
     public getFitToScreenStatus(): boolean {
         return false;
     }
