@@ -1,8 +1,9 @@
 /* Device list — newbie-friendly card layout. Uses ScrcpyDeck theme tokens. */
 
 body.list {
+    box-sizing: border-box;
     height: auto;
-    width: auto;
+    width: 100%;
     overflow: auto;
 }
 
@@ -267,9 +268,9 @@ body.list #device_list_menu { display: none; }
     justify-content: center;
     width: 100%;
     padding: 18px 20px;
-    border: 2px dashed var(--sd-border);
+    border: 1px solid var(--sd-border);
     border-radius: var(--sd-radius);
-    background: transparent;
+    background: var(--sd-surface);
     cursor: pointer;
     font-family: var(--sd-font);
     transition: border-color 0.14s, color 0.14s, background 0.14s;
@@ -280,6 +281,11 @@ body.list #device_list_menu { display: none; }
 #devices .sd-add-card:hover {
     border-color: var(--sd-accent);
     background: var(--sd-accent-soft);
+}
+
+#devices .sd-add-card:focus-visible {
+    outline: 3px solid var(--sd-accent);
+    outline-offset: 3px;
 }
 
 /* Action row: icon + "Add device" label */
@@ -306,8 +312,8 @@ body.list #device_list_menu { display: none; }
 /* Empty-state copy — hidden while real device cards exist */
 #devices .sd-add-hint {
     display: none;
-    text-align: center;
-    margin-bottom: 20px;
+    min-width: 0;
+    text-align: left;
 }
 
 #devices .sd-add-hint-title {
@@ -315,7 +321,7 @@ body.list #device_list_menu { display: none; }
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--sd-text);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 #devices .sd-add-hint p {
@@ -323,12 +329,17 @@ body.list #device_list_menu { display: none; }
     font-size: 0.9rem;
     line-height: 1.5;
     color: var(--sd-text-muted);
-    max-width: 300px;
+    max-width: 42ch;
 }
 
 /* When no real devices: expand the card and reveal the empty-state copy */
 #devices .device-list.sd-list-empty .sd-add-card {
-    padding: 88px 24px;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(160px, 1fr);
+    align-items: center;
+    gap: 24px;
+    padding: 32px;
+    text-align: left;
 }
 
 #devices .device-list.sd-list-empty .sd-add-hint {
@@ -341,7 +352,34 @@ body.list #device_list_menu { display: none; }
 }
 
 #devices .device-list.sd-list-empty .sd-add-row {
+    justify-self: end;
+    min-height: 48px;
+    box-sizing: border-box;
+    padding: 0 18px;
+    border: 1px solid var(--sd-accent);
+    border-radius: var(--sd-radius-sm);
+    background: var(--sd-accent);
+    color: var(--sd-accent-contrast);
     font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+#devices .device-list.sd-list-empty .sd-add-card:hover .sd-add-row {
+    color: var(--sd-accent-contrast);
+    background: var(--sd-accent-hover);
+}
+
+@media (max-width: 700px) {
+    #devices .device-list.sd-list-empty .sd-add-card {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: start;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    #devices .device-list.sd-list-empty .sd-add-row {
+        justify-self: start;
+    }
 }
 
 /* ── Actions section ── */
