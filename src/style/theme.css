@@ -5,8 +5,8 @@
 :root {
     --sd-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
-    --sd-accent: hsl(178, 62%, 38%);
-    --sd-accent-hover: hsl(178, 62%, 32%);
+    --sd-accent: hsl(178, 62%, 30%);
+    --sd-accent-hover: hsl(178, 62%, 27%);
     --sd-accent-contrast: hsl(0, 0%, 100%);
     --sd-accent-soft: hsla(178, 62%, 38%, 0.1);
 
@@ -15,11 +15,11 @@
     --sd-surface-2: hsl(200, 18%, 96%);
     --sd-border: hsl(205, 16%, 91%);
     --sd-text: hsl(208, 20%, 22%);
-    --sd-text-muted: hsl(206, 10%, 50%);
+    --sd-text-muted: hsl(206, 10%, 43%);
 
-    --sd-ok: hsl(160, 52%, 40%);
+    --sd-ok: hsl(160, 52%, 32%);
     --sd-error: hsl(0, 65%, 52%);
-    --sd-pending: hsl(35, 85%, 48%);
+    --sd-pending: hsl(35, 85%, 34%);
 
     --sd-radius: 14px;
     --sd-radius-sm: 9px;
