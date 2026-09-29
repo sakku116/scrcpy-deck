@@ -2,31 +2,43 @@
    clashing with the inherited ws-scrcpy device-list styles. Uses the shared
    theme tokens (src/style/theme.css) so it follows light/dark and stays flat. */
 
+.sd-overlay:not([open]) {
+    display: none;
+}
+.sd-overlay[open] {
+    display: grid;
+    place-items: center;
+}
 .sd-overlay {
     position: fixed;
     inset: 0;
     z-index: 1001;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    box-sizing: border-box;
+    overflow: visible;
+    border: 0;
+    padding: 24px 0;
+    background: transparent;
+    color: inherit;
+}
+.sd-overlay::backdrop {
     background: hsla(208, 24%, 12%, 0.5);
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--sd-anim) ease;
-}
-.sd-overlay.sd-visible {
-    opacity: 1;
-    pointer-events: auto;
 }
 
 .sd-modal {
     position: relative;
-    width: 480px;
+    box-sizing: border-box;
+    width: 840px;
     max-width: calc(100vw - 32px);
-    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
     overflow-y: auto;
+    overscroll-behavior: contain;
     background: var(--sd-surface);
     color: var(--sd-text);
     border: 1px solid var(--sd-border);
@@ -37,7 +49,7 @@
     transform: translateY(8px) scale(0.98);
     transition: transform var(--sd-anim) ease;
 }
-.sd-overlay.sd-visible .sd-modal {
+.sd-overlay[open] .sd-modal {
     transform: none;
 }
 
@@ -104,11 +116,41 @@
 
 .sd-pane {
     display: none;
-    flex-direction: column;
-    gap: 12px;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: start;
+    gap: 24px;
 }
 .sd-pane.sd-active {
+    display: grid;
+}
+.sd-instructions {
+    padding: 20px;
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius);
+    background: var(--sd-surface-2);
+}
+.sd-form {
     display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+.sd-form-section {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius-sm);
+}
+.sd-form-section .sd-primary { grid-column: 1 / -1; }
+.sd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--sd-text);
+    font-size: 13px;
 }
 
 .sd-steps {
@@ -131,6 +173,10 @@
     border-radius: var(--sd-radius-sm);
     transition: border-color var(--sd-anim), box-shadow var(--sd-anim);
 }
+.sd-input::placeholder {
+    color: var(--sd-text-muted);
+    opacity: 1;
+}
 .sd-input:focus {
     outline: none;
     border-color: var(--sd-accent);
@@ -150,6 +196,15 @@
 }
 .sd-primary:hover {
     background: var(--sd-accent-hover);
+}
+
+.sd-overlay button:focus-visible {
+    outline: 3px solid var(--sd-accent);
+    outline-offset: 3px;
+}
+.sd-overlay .sd-input:focus-visible {
+    outline: 3px solid var(--sd-accent);
+    outline-offset: 2px;
 }
 
 .sd-divider {
@@ -182,4 +237,26 @@
     border-top: 1px solid var(--sd-border);
     font-size: 11px;
     color: var(--sd-text-muted);
+}
+
+@media (max-width: 520px) {
+    .sd-overlay { padding: 16px 0; }
+    .sd-modal { max-width: calc(100vw - 24px); padding: 24px 18px 20px; }
+}
+
+@media (max-width: 700px) {
+    .sd-pane { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .sd-instructions { padding: 16px; }
+    .sd-form-section { grid-template-columns: minmax(0, 1fr); }
+    .sd-form-section .sd-primary { grid-column: auto; }
+}
+
+@media (max-height: 560px) {
+    .sd-overlay[open] { place-items: start center; }
+    .sd-overlay { padding-block: 12px; }
+    .sd-modal { max-height: calc(100dvh - 24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sd-modal, .sd-close, .sd-tab, .sd-input, .sd-primary { transition: none; }
 }
