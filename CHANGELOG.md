@@ -6,6 +6,13 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.9.0] — 2026-09-30
+
+### Features
+- UI: refresh the dashboard empty state and wireless wizard with accessible dialog controls, responsive layouts, and improved light/dark contrast
+
+---
+
 ## [0.8.0] — 2026-07-27
 
 ### Features
