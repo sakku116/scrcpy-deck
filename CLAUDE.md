@@ -160,3 +160,17 @@ When the user says "make a release" or "release vX.Y.Z", execute these steps in 
 
 - `origin`   → `git@github.com:sakku116/scrcpy-deck.git` (this fork)
 - `upstream` → `https://github.com/NetrisTV/ws-scrcpy.git` (ws-scrcpy source)
+
+## Agent skills
+
+### Issue tracker
+
+Use GitHub Issues for `sakku116/scrcpy-deck`. Before tracker operations, read `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the canonical triage labels. Before triaging, read `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Use a single-context layout. Before exploring the codebase, read `docs/agents/domain.md`.
